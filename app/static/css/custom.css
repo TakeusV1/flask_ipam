@@ -1,4 +1,9 @@
-btn-exsm {
+.btn-exsm {
     padding-top: 1px;
     padding-bottom: 1px;
+}
+
+pre {
+    margin: 0;
+    padding: 0;
 }

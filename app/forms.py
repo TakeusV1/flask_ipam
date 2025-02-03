@@ -10,3 +10,8 @@ class NewPrefixForm(FlaskForm):
     subnet = StringField(validators=[DataRequired(),IPAddress(ipv4=True),Length(max=128)])
     prefix = IntegerField(validators=[DataRequired(),NumberRange(min=0,max=32)])
     description = StringField(validators=[DataRequired(),Length(max=128)])
+    
+class NewAllocationForm(FlaskForm):
+    ipv4 = StringField(validators=[DataRequired(),IPAddress(ipv4=True),Length(max=128)])
+    hostname = StringField(validators=[DataRequired(),Length(max=128)])
+    description = StringField(validators=[DataRequired(),Length(max=128)])
