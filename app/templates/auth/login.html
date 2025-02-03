@@ -1,0 +1,36 @@
+{% extends 'auth/_base.html' %}
+{% block content %}
+{% include "auth/_flash.html" %}
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow-lg rounded-3">
+        <h2 class="text-center mb-4">Login Page</h2>
+        <form method="POST">
+            {{ form.csrf_token }}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    {% if bad_password %}
+                    {{ form.username(class="form-control is-invalid", placeholder="username") }}
+                    {% else %}
+                    {{ form.username(class="form-control", placeholder="username") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    {% if bad_password %}
+                    {{ form.password(class="form-control is-invalid", placeholder="password") }}
+                    {% else %}
+                    {{ form.password(class="form-control", placeholder="password") }}
+                    {% endif %}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

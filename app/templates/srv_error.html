@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <!-- BASE -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Takeus - {{HTTP_ERROR[0]}} Error</title>
+    <meta name="author" content="Takeus">
+    <meta name="copyright" content="Takeus 2024">
+    <!-- CSS/LINKS -->
+    <link rel="icon" type="image/png" href="{{ url_for('static',filename='/img/logo.png') }}" />
+    <link rel="stylesheet" href="https://bootswatch.com/5/zephyr/bootstrap.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="px-4 pt-5 my-5 text-center">
+        <h1 class="display-4 fw-bold">{{HTTP_ERROR[0]}} <u>{{HTTP_ERROR[1]}}</u></h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">{{HTTP_ERROR[2]}}</p>
+            {% if HTTP_ERROR[0] != "503" %}
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
+                <a type="button" class="btn btn-primary btn-lg px-4 me-sm-3" href="/">Home</a>
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="location.reload();">Reload</button>
+            </div>
+            {% endif %}
+        </div>
+        <div class="container px-5">
+            <img src="{{HTTP_ERROR[3]}}" class="img-fluid" alt="403" loading="lazy" width="300">
+        </div>
+    </div>
+</body>
+</html>
