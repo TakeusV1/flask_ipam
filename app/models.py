@@ -7,3 +7,10 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(32),unique=True)
     is_admin = db.Column(db.Boolean(),default=False)
     dat_last = db.Column(db.DateTime())
+    
+class Prefix(db.Model):
+    id = db.Column(db.Integer(),primary_key=True,unique=True)
+    prefix = db.Column(db.Integer())
+    network_address = db.Column(db.String(16),unique=True)
+    hosts = db.Column(db.Integer())
+    description = db.Column(db.String(32),unique=True)

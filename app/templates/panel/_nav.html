@@ -7,30 +7,26 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-                <a class="nav-link {% if is_dash %}active{% endif %}" href="{{ url_for('base.dashboard') }}">Dashboard</a>
+                <a class="nav-link {% if is_dash %}active{% endif %}" href="{{ url_for('base.dashboard') }}"><i class="bi bi-house-door-fill"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if is_networks %}active{% endif %}" href="{{ url_for('base.networks') }}"><i class="bi bi-globe"></i> Network(s)</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Network</a>
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-archive-fill"></i> Inventory</a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Subnets</a></li>
-                    <li><a class="dropdown-item" href="#">Attributions</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-pc-display"></i> Computers</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-server"></i> Servers</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-server"></i> Virtual Machines</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-ethernet"></i> Networks Devices</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-collection"></i> Others</a></li>
                 </ul>
             </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-archive-fill"></i> Inventory</a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-pc-display"></i> Computers</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-server"></i> Servers</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-server"></i> Virtual Machines</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-ethernet"></i> Networks Devices</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-collection"></i> Others</a></li>
-                    </ul>
-                </li>
-                {% if current_user.admin %}
-                <li class="nav-item">
-                    <a class="nav-link active" href="">Admin</a>
-                </li>
-                {% endif %}
+            {% if current_user.admin %}
+            <li class="nav-item">
+                <a class="nav-link active" href="">Admin</a>
+            </li>
+            {% endif %}
             </ul>
             <form class="d-flex" role="search">
                 <a class="btn btn-outline-warning" type="submit" href="{{ url_for('auth.logout') }}">logout</a>
