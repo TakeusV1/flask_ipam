@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField
+from wtforms import StringField, PasswordField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, IPAddress, NumberRange
 
 class LoginForm(FlaskForm):
@@ -9,9 +9,10 @@ class LoginForm(FlaskForm):
 class NewPrefixForm(FlaskForm):
     subnet = StringField(validators=[DataRequired(),IPAddress(ipv4=True),Length(max=128)])
     prefix = IntegerField(validators=[DataRequired(),NumberRange(min=0,max=32)])
-    description = StringField(validators=[DataRequired(),Length(max=128)])
+    description = StringField(validators=[Length(max=128)])
     
 class NewAllocationForm(FlaskForm):
     ipv4 = StringField(validators=[DataRequired(),IPAddress(ipv4=True),Length(max=128)])
-    hostname = StringField(validators=[DataRequired(),Length(max=128)])
-    description = StringField(validators=[DataRequired(),Length(max=128)])
+    host_name = StringField(validators=[DataRequired(),Length(max=128)])
+    host_desc = StringField(validators=[Length(max=128)])
+    #host_type = SelectField(choices=[(0,'None'),(1,'Computer'),(2,'Server'),(3,'Virtual Machine'),(4,'Network Device'),(5,'Other')],validators=[DataRequired()])

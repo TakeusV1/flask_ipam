@@ -27,7 +27,16 @@
                         <td><b>{{network.description}}</b></td>
                         <td>
                             <a href="{{ url_for('base.allocations',net_id=network.id) }}" class="btn btn-sm btn-outline-info" style="padding-top:1px;padding-bottom:1px">Allocations</a>
-                            <button class="btn btn-sm btn-outline-danger"style="padding-top:1px;padding-bottom:1px">delete</button>
+                            <button 
+                                hx-get="{{ url_for('base.network_del_modal',net_id=network.id) }}" 
+                                hx-trigger="click" 
+                                hx-target="#modal-get" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modal-get" 
+                                class="btn btn-sm btn-outline-danger"
+                                style="padding-top:1px;padding-bottom:1px"
+                                > Delete
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -56,6 +65,16 @@
                 </form>
             </div>
         </div>
+    </div>
+</div>
+<!-- MODAL -->
+<div id="modal-get"
+    class="modal modal-blur fade"
+    style="display: none"
+    aria-hidden="false"
+    tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content"></div>
     </div>
 </div>
 {% endblock %}

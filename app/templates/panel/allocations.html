@@ -13,6 +13,7 @@
                     <th scope="col">IPv4</th>
                     <th scope="col">Hostname</th>
                     <th scope="col">Description</th>
+                    <th scope="col">Device</th>
                     <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -24,8 +25,24 @@
                         <td>{{allocation.hostname}}</td>
                         <td><b>{{allocation.description}}</b></td>
                         <td>
+                            {% if Inventory.query.filter_by(id=allocation.device_id).first() %}
+                            <a href="{{Inventory.query.filter_by(id=allocation.device_id).first().id}}" style="text-decoration:none;">link</a>
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                        <td>
                             <a href="" class="btn btn-sm btn-outline-info" style="padding-top:1px;padding-bottom:1px">edit</a>
-                            <button class="btn btn-sm btn-outline-danger"style="padding-top:1px;padding-bottom:1px">delete</button>
+                            <button 
+                                hx-get="{{ url_for('base.allocation_del_modal',net_id=network.id,ipv4=allocation.ipv4) }}" 
+                                hx-trigger="click" 
+                                hx-target="#modal-get" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modal-get" 
+                                class="btn btn-sm btn-outline-danger"
+                                style="padding-top:1px;padding-bottom:1px"
+                                > Delete
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -39,21 +56,31 @@
                 <form method="POST">
                     {{ form.csrf_token }}
                     <div class="mb-3">
-                        <label for="ipv4" class="form-label">IPv4</label>
+                        <label class="form-label">IPv4</label>
                         {{ form.ipv4(class="form-control", placeholder=network.network_address) }}
                     </div>
                     <div class="mb-3">
-                        <label for="prefix" class="form-label">Hostname</label>
-                        {{ form.hostname(class="form-control", placeholder="example") }}
+                        <label class="form-label">Hostname</label>
+                        {{ form.host_name(class="form-control", placeholder="example") }}
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        {{ form.description(class="form-control", placeholder="webserver") }}
+                        <label class="form-label">Description</label>
+                        {{ form.host_desc(class="form-control", placeholder="webserver") }}
                     </div>
                     <button type="submit" class="btn btn-secondary w-100">Submit</button>
                 </form>
             </div>
         </div>
+    </div>
+</div>
+<!-- MODAL -->
+<div id="modal-get"
+    class="modal modal-blur fade"
+    style="display: none"
+    aria-hidden="false"
+    tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content"></div>
     </div>
 </div>
 {% endblock %}

@@ -18,6 +18,23 @@ class Network(db.Model):
 class Allocation(db.Model):
     ipv4 = db.Column(db.String(16),primary_key=True,unique=True)
     net_id = db.Column(db.Integer(),db.ForeignKey('network.id'))
-    hardware_id = db.Column(db.Integer())
     hostname = db.Column(db.String(32),unique=True)
     description = db.Column(db.String(64))
+    device_id = db.Column(db.Integer(),db.ForeignKey('inventory.id'))
+    
+class Inventory(db.Model):
+    id = db.Column(db.Integer(),primary_key=True,unique=True)
+    ip_addr = db.Column(db.Text())
+    # Host Information
+    host_type = db.Column(db.Integer())
+    host_name = db.Column(db.String(32))
+    host_desc = db.Column(db.String(64))
+    # Hardware Information
+    host_model = db.Column(db.String(32))
+    host_manufacturer = db.Column(db.String(32))
+    host_serialnumber = db.Column(db.String(32))
+    # Network Information
+    host_os = db.Column(db.String(32))
+    host_location = db.Column(db.String(32))
+    host_owner = db.Column(db.String(32))
+    host_contact = db.Column(db.String(32))
