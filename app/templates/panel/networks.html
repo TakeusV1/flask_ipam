@@ -23,7 +23,7 @@
                         <th scope="row">{{network.id}}</th>
                         <td>{{network.network_address}}</td>
                         <td>{{network.prefix}}</td>
-                        <td>X / {{network.hosts}} </td>
+                        <td>{{Allocation.query.filter_by(net_id=network.id).count()}} / {{network.hosts}} </td>
                         <td><b>{{network.description}}</b></td>
                         <td>
                             <a href="{{ url_for('base.allocations',net_id=network.id) }}" class="btn btn-sm btn-outline-info" style="padding-top:1px;padding-bottom:1px">Allocations</a>

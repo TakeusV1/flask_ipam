@@ -18,7 +18,7 @@ class Network(db.Model):
 class Allocation(db.Model):
     ipv4 = db.Column(db.String(16),primary_key=True,unique=True)
     net_id = db.Column(db.Integer(),db.ForeignKey('network.id'))
-    hostname = db.Column(db.String(32),unique=True)
+    hostname = db.Column(db.String(32))
     description = db.Column(db.String(64))
     device_id = db.Column(db.Integer(),db.ForeignKey('inventory.id'))
     

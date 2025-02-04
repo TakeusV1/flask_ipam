@@ -1,5 +1,48 @@
 {% extends 'panel/_base.html' %}
 {% block content %}
 {% include 'panel/_nav.html' %}
-
+<div class="container" style="margin-top:5vh;">
+    <div class="row">
+        <!-- NETWORKS -->
+        <div class="col-3">
+            <div class="card text-bg-info mb-3">
+                <div class="card-header"><i class="bi bi-globe"></i> Total Networks</div>
+                <div class="card-body">
+                    <h5 class="card-title">Primary card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <!-- TOTAL IP -->
+        <div class="col-3">
+            <div class="card text-bg-primary mb-3">
+                <div class="card-header"><i class="bi bi-broadcast-pin"></i> Total Allocations</div>
+                <div class="card-body">
+                    <h5 class="card-title">Primary card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <!-- TOTAL Inventory -->
+        <div class="col-3">
+            <div class="card text-bg-secondary mb-3">
+                <div class="card-header"><i class="bi bi-archive"></i> Total Inventory</div>
+                <div class="card-body">
+                    <h5 class="card-title">Primary card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Total Users -->
+        <div class="col-3">
+            <div class="card text-bg-secondary mb-3">
+                <div class="card-header"><i class="bi bi-people"></i> Total Users</div>
+                <div class="card-body">
+                    <h5 class="card-title">Primary card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

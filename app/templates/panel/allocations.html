@@ -34,7 +34,7 @@
                         <td>
                             <a href="" class="btn btn-sm btn-outline-info" style="padding-top:1px;padding-bottom:1px">edit</a>
                             <button 
-                                hx-get="{{ url_for('base.allocation_del_modal',net_id=network.id,ipv4=allocation.ipv4) }}" 
+                                hx-get="{{ url_for('base.allocation_del_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
                                 hx-trigger="click" 
                                 hx-target="#modal-get" 
                                 data-bs-toggle="modal" 
@@ -73,6 +73,13 @@
         </div>
     </div>
 </div>
+<nav class="d-flex flex-row justify-content-center align-items-center">
+    <ul class="pagination">
+        {% for page in allocations.iter_pages() %}
+        <li class="page-item"><a class="page-link" href="?page={{page}}">{{page}}</a></li>
+        {% endfor %}
+    </ul>
+</nav>
 <!-- MODAL -->
 <div id="modal-get"
     class="modal modal-blur fade"
