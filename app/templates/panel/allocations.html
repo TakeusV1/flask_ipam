@@ -32,13 +32,22 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="" class="btn btn-sm btn-outline-info" style="padding-top:1px;padding-bottom:1px">edit</a>
+                            <button 
+                                hx-get="{{ url_for('base.allocation_edit_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
+                                hx-trigger="click" 
+                                hx-target="#modal-edit" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modal-edit" 
+                                class="btn btn-sm btn-outline-info"
+                                style="padding-top:1px;padding-bottom:1px"
+                                > Edit
+                            </button>
                             <button 
                                 hx-get="{{ url_for('base.allocation_del_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
                                 hx-trigger="click" 
-                                hx-target="#modal-get" 
+                                hx-target="#modal-del" 
                                 data-bs-toggle="modal" 
-                                data-bs-target="#modal-get" 
+                                data-bs-target="#modal-del" 
                                 class="btn btn-sm btn-outline-danger"
                                 style="padding-top:1px;padding-bottom:1px"
                                 > Delete
@@ -81,7 +90,16 @@
     </ul>
 </nav>
 <!-- MODAL -->
-<div id="modal-get"
+<div id="modal-del"
+    class="modal modal-blur fade"
+    style="display: none"
+    aria-hidden="false"
+    tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div id="modal-edit"
     class="modal modal-blur fade"
     style="display: none"
     aria-hidden="false"

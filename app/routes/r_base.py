@@ -7,7 +7,7 @@ from app._config import app_version
 
 from app.extensions import *
 from app.models import *
-from app.forms import NewPrefixForm, NewAllocationForm
+from app.forms import NewPrefixForm, NewAllocationForm, ChangeAllocationForm
 
 base = Blueprint('base', __name__)
 
@@ -22,7 +22,28 @@ def home():
 @login_required
 def dashboard():
     
-    return render_template('panel/dashboard.html', title="Dashboard", is_dash=True, app_version=app_version)
+    db_networks = Network.query.count()
+    db_allocations = Allocation.query.count()
+    db_inventory = Inventory.query.count()
+    db_users = User.query.count()
+    available_alloc = 0
+    
+    for available_ip in Network.query.all():
+        available_alloc += int(available_ip.hosts)
+    
+    return render_template(
+        'panel/dashboard.html',
+        title="Dashboard", 
+        is_dash=True, 
+        app_version=app_version,
+        ## Variables
+        db_networks=db_networks,
+        db_allocations=db_allocations,
+        db_inventory=db_inventory,
+        available_alloc=available_alloc,
+        db_users=db_users,
+        navcolor='dark'
+    )
 
 @base.route('/network',methods=['GET','POST'])
 @login_required
@@ -45,7 +66,7 @@ def networks():
     elif form.errors:
         flash(form.errors, 'danger')
     
-    return render_template('panel/networks.html', title="Prefixes", is_networks=True, app_version=app_version, prefixes=networks, form=form, Allocation=Allocation)
+    return render_template('panel/networks.html', title="Prefixes", is_networks=True, app_version=app_version, prefixes=networks, form=form, Allocation=Allocation, navcolor='dark')
 
 @base.route('/network/<int:net_id>/allocations',methods=['GET','POST'])
 @login_required
@@ -53,7 +74,7 @@ def allocations(net_id):
     
     active_page = request.args.get('page', type=int)
     db_network = Network.query.filter_by(id=net_id).first()
-    db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=15 )
+    db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=12 )
         
     form = NewAllocationForm()
     if request.method == 'POST' and form.validate_on_submit():
@@ -76,22 +97,9 @@ def allocations(net_id):
     elif form.errors:
         flash(form.errors, 'danger')
     
-    return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, form=form, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page)
+    return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, form=form, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page, navcolor='dark')
 
 ## MODAL ROUTES
-
-@base.get('/network/<int:net_id>/allocations/<string:ipv4>/del_modal')
-@login_required
-def allocation_del_modal(net_id,ipv4):
-    modal = {
-        'title': 'Delete Allocation',
-        'body': f'Are you sure you want to delete <b>{ipv4}</b> allocation ?',
-        'color': 'warning',
-        'action': 'delete',
-        'action_text': 'Delete',
-        'action_url': url_for('base.allocation_delete',net_id=net_id,ipv4=ipv4)
-    }
-    return render_template('panel/_modal.html', modal=modal, net_id=net_id, ipv4=ipv4, old_page=request.args.get('page', type=int))	
 
 @base.get('/network/<int:net_id>/del_modal')
 @login_required
@@ -107,7 +115,44 @@ def network_del_modal(net_id):
     }
     return render_template('panel/_modal.html', modal=modal, net_id=net_id)	
 
-## DELETE ROUTES
+@base.get('/network/<int:net_id>/allocations/<string:ipv4>/del_modal')
+@login_required
+def allocation_del_modal(net_id,ipv4):
+    modal = {
+        'title': 'Delete Allocation',
+        'body': f'Are you sure you want to delete <b>{ipv4}</b> allocation ?',
+        'color': 'warning',
+        'action': 'delete',
+        'action_text': 'Delete',
+        'action_url': url_for('base.allocation_delete',net_id=net_id,ipv4=ipv4)
+    }
+    return render_template('panel/_modal.html', modal=modal, net_id=net_id, ipv4=ipv4, old_page=request.args.get('page', type=int), pagination_active=True)	
+
+
+@base.route('/network/<int:net_id>/allocations/<string:ipv4>/edit_modal', methods=['GET','POST'])
+@login_required
+def allocation_edit_modal(net_id, ipv4):
+    db_alloc = Allocation.query.filter_by(ipv4=ipv4).first()
+        
+    form = ChangeAllocationForm()
+    if form.validate_on_submit() and request.method == 'POST':
+        db_alloc.hostname = str(form.hostname.data)
+        db_alloc.description = str(form.description.data)
+        db.session.commit()
+        flash("Allocation Updated", 'success')
+        return redirect(url_for('base.allocations',net_id=net_id,page=request.args.get('page', type=int)))
+    
+    modal = {
+        'title': 'Update Allocation',
+        'body': f'Change informations for <b>{db_alloc.ipv4}</b> allocation.',
+        'color': 'primary',
+        'modal_type': 'form',
+        'action_text': 'Save',
+        'form_url': url_for('base.allocation_edit_modal',net_id=db_alloc.net_id,ipv4=db_alloc.ipv4),
+    }
+    return render_template('panel/_modal.html', modal=modal, form=form, old_page=request.args.get('page', type=int), pagination_active=True)	
+
+## MODIFICATION ROUTES
 
 @base.get('/network/<int:net_id>/allocations/<string:ipv4>/delete')
 @login_required

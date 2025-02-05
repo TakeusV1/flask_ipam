@@ -1,0 +1,110 @@
+{% extends 'panel/_base.html' %}
+{% block content %}
+{% include 'panel/_nav.html' %}
+{% include 'panel/_flash.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4">Admin Panel</h1>
+            <p class="lead">Welcome {{current_user.username}} to the admin dashboard.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">User Management</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Admin User</th>
+                                <th>Last Connection</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{user.id}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.is_admin}}</td>
+                                <td>{% if user.dat_last != None %}{{user.dat_last.strftime('%Y-%m-%d %H:%M:%S')}}{%else%}N/A{%endif%}</td>
+                                <td>
+                                    <button 
+                                        hx-get="{{ url_for('admin.user_modal_edit',user_id=user.id) }}" 
+                                        hx-trigger="click" 
+                                        hx-target="#modal-edit" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modal-edit" 
+                                        class="btn btn-sm btn-warning"
+                                        > Edit
+                                    </button>
+                                    <button 
+                                        hx-get="{{ url_for('admin.user_modal_delete',user_id=user.id) }}" 
+                                        hx-trigger="click" 
+                                        hx-target="#modal-del" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modal-del" 
+                                        class="btn btn-sm btn-danger"
+                                        > Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Add User</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.csrf_token }}
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            {{ form.username(class="form-control", placeholder="johndoe") }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            {{ form.password(class="form-control", placeholder="superpassword") }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Is Admin?</label>
+                            {{ form.is_admin(class="form-control") }}
+                        </div>
+                        <button type="submit" class="btn btn-secondary w-100">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL -->
+<div id="modal-del"
+    class="modal modal-blur fade"
+    style="display: none"
+    aria-hidden="false"
+    tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+<div id="modal-edit"
+    class="modal modal-blur fade"
+    style="display: none"
+    aria-hidden="false"
+    tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+{% include 'panel/_footer.html' %}
+{% endblock %}

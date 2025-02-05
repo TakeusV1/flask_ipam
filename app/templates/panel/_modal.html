@@ -1,3 +1,31 @@
+{% if modal.modal_type == 'form' %}
+<div class="modal-dialog modal-dialog-centered">
+    <form method="post" action="{{modal.form_url}}{% if pagination_active %}?page={{old_page}}{%endif%}">
+    {{ form.csrf_token }}
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-{{modal.color}}">{{ modal.title }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p>
+                {{ modal.body|safe }}<br><br>
+                {% for entry in form %}
+                {% if entry.id != 'csrf_token' %}
+                {{ entry.label(class="form-label") }}<br>
+                {{ entry(class="form-control") }}
+                {% endif %}
+                {% endfor %}
+            </p>
+        </div>  
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-{{modal.color}}">{{modal.action_text}}</button>
+        </div>
+    </div>
+    </form>
+</div>
+{% else %}
 <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header">
@@ -9,11 +37,8 @@
         </div>  
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            {% if modal.action == 'delete' %}
-            <a href="{{modal.action_url}}?page={{old_page}}" class="btn btn-{{modal.color}}">{{modal.action_text}}</a>
-            {% else %}
-            <button type="button" class="btn btn-primary">Save changes</button>
-            {% endif %}
+            <a href="{{modal.action_url}}{% if pagination_active %}?page={{old_page}}{%endif%}" class="btn btn-{{modal.color}}">{{modal.action_text}}</a>
         </div>
     </div>
 </div>
+{% endif %}

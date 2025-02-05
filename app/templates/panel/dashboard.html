@@ -5,44 +5,87 @@
     <div class="row">
         <!-- NETWORKS -->
         <div class="col-3">
-            <div class="card text-bg-info mb-3">
-                <div class="card-header"><i class="bi bi-globe"></i> Total Networks</div>
+            <a href="{{ url_for('base.networks') }}" class="card text-bg-info mb-3 text-decoration-none">
+                <div class="card-header"><i class="bi bi-globe"></i> <b>Total Networks</b></div>
                 <div class="card-body">
-                    <h5 class="card-title">Primary card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <h1 class="card-title text-center">{{db_networks}}</h1>
                 </div>
-            </div>
+            </a>
         </div>
         <!-- TOTAL IP -->
         <div class="col-3">
-            <div class="card text-bg-primary mb-3">
-                <div class="card-header"><i class="bi bi-broadcast-pin"></i> Total Allocations</div>
+            <a href="{{ url_for('base.networks') }}" class="card text-bg-secondary mb-3 text-decoration-none" style="margin-bottom:1vh;">
+                <div class="card-header"><i class="bi bi-broadcast-pin"></i> <b>Total Allocations</b></div>
                 <div class="card-body">
-                    <h5 class="card-title">Primary card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <h1 class="card-title text-center">{{db_allocations}} / {{ available_alloc }}</h1>
                 </div>
-            </div>
+            </a>
         </div>
         <!-- TOTAL Inventory -->
         <div class="col-3">
-            <div class="card text-bg-secondary mb-3">
-                <div class="card-header"><i class="bi bi-archive"></i> Total Inventory</div>
+            <a class="card text-bg-secondary mb-3 text-decoration-none">
+                <div class="card-header"><i class="bi bi-archive"></i> <b>Total Inventory</b></div>
                 <div class="card-body">
-                    <h5 class="card-title">Primary card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <h1 class="card-title text-center">{{db_inventory}}</h1>
                 </div>
-            </div>
+            </a>
         </div>
         <!-- Total Users -->
         <div class="col-3">
-            <div class="card text-bg-secondary mb-3">
-                <div class="card-header"><i class="bi bi-people"></i> Total Users</div>
+            <a class="card text-bg-primary mb-3 text-decoration-none">
+                <div class="card-header"><i class="bi bi-people"></i> <b>Total Users</b></div>
                 <div class="card-body">
-                    <h5 class="card-title">Primary card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <h1 class="card-title text-center">{{ db_users }}</h1>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
+    <hr>
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-4">
+            <canvas id="allocchart"></canvas>
+        </div>
+        <div class="col-4">
+            <canvas id="deviceschart"></canvas>
+        </div>
+        <div class="col-2"></div>
+    </div>
+    <hr>
+    {% include 'panel/_footer.html' %}
 </div>
+<script src="{{ url_for('static',filename='js/chart.umd.min.js') }}"></script>
+<script>
+    /* Allocations Chart */
+    const ctx = document.getElementById('allocchart');
+    var ip_max = JSON.parse('{{ available_alloc | tojson }}');
+    var ip_min = JSON.parse('{{ db_allocations | tojson }}');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Reserved', 'Available'],
+        datasets: [{
+          label: 'IP Addresses',
+          data: [ip_min, ip_max],
+          borderWidth: 2
+        }]
+      },
+      options: {
+      }
+    });
+    /* Devices Chart */
+    const ctx1 = document.getElementById('deviceschart');
+    new Chart(ctx1, {
+      type: 'doughnut',
+      data: {
+        labels: ['Computers', 'Servers', 'VM', 'Network Devices', 'Others'],
+        datasets: [{
+          data: [1, 1, 1, 1, 1],
+          borderWidth: 2
+        }]
+      },
+      options: {
+      }
+    });
+</script>
 {% endblock %}
