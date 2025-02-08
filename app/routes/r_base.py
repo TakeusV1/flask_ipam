@@ -23,7 +23,7 @@ def home():
 def dashboard():
     
     db_networks = Network.query.count()
-    db_allocations = Allocation.query.count()
+    db_allocations = Allocation.query.filter_by(is_used=True).count()
     db_inventory = Inventory.query.count()
     db_users = User.query.count()
     available_alloc = 0
@@ -52,12 +52,16 @@ def networks():
     form = NewPrefixForm()
     if request.method == 'POST' and form.validate_on_submit():
         try:
-            network = IPv4Network(f"{str(form.subnet.data)}/{str(form.prefix.data)}")
+            network = IPv4Network(f"{str(form.subnet.data)}/{str(form.prefix.data)}", False)
             
-            add_net = Network(network_address=str(network.network_address),prefix=network.prefixlen,hosts=network.num_addresses,description=str(form.description.data))
+            add_net = Network(network_address=str(network.network_address),prefix=network.prefixlen,hosts=network.num_addresses-2,description=str(form.description.data))
             db.session.add(add_net)
             db.session.commit()
             
+            for ip in network.hosts():
+                db.session.add(Allocation(ipv4=str(ip), net_id=add_net.id))
+            
+            db.session.commit()
             return redirect(url_for('base.networks'))
             
         except:
@@ -73,8 +77,14 @@ def networks():
 def allocations(net_id):
     
     active_page = request.args.get('page', type=int)
+    if active_page == None:
+        active_page = 0
+    
+    next_page = active_page+1
+    prev_page = active_page-1
+    
     db_network = Network.query.filter_by(id=net_id).first()
-    db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=12 )
+    db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=15 )
         
     form = NewAllocationForm()
     if request.method == 'POST' and form.validate_on_submit():
@@ -97,7 +107,7 @@ def allocations(net_id):
     elif form.errors:
         flash(form.errors, 'danger')
     
-    return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, form=form, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page, navcolor='dark')
+    return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, form=form, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page, next_page=next_page, prev_page=prev_page, navcolor='dark')
 
 ## MODAL ROUTES
 

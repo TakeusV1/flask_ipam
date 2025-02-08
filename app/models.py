@@ -13,13 +13,14 @@ class Network(db.Model):
     prefix = db.Column(db.Integer())
     network_address = db.Column(db.String(16),unique=True)
     hosts = db.Column(db.Integer())
-    description = db.Column(db.String(32),unique=True)
+    description = db.Column(db.String(32))
     
 class Allocation(db.Model):
     ipv4 = db.Column(db.String(16),primary_key=True,unique=True)
     net_id = db.Column(db.Integer(),db.ForeignKey('network.id'))
     hostname = db.Column(db.String(32))
     description = db.Column(db.String(64))
+    is_used = db.Column(db.Boolean(),default=False)
     device_id = db.Column(db.Integer(),db.ForeignKey('inventory.id'))
     
 class Inventory(db.Model):
