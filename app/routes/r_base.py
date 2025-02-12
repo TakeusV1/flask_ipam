@@ -177,7 +177,10 @@ def allocation_edit_modal(net_id, ipv4):
         'action_text': 'Save',
         'form_url': url_for('base.allocation_edit_modal',net_id=db_alloc.net_id,ipv4=db_alloc.ipv4),
     }
-    return render_template('panel/_modal.html', modal=modal, form=form, old_page=request.args.get('page', type=int), pagination_active=True)	
+    old_page = request.args.get('page', type=int)
+    if old_page == 0:
+        old_page = 1
+    return render_template('panel/_modal.html', modal=modal, form=form, old_page=old_page, pagination_active=True)	
 
 ## MODIFICATION ROUTES
 @base.get('/network/<int:net_id>/allocations/<string:ipv4>/unallocate')
@@ -187,6 +190,8 @@ def allocation_delete(net_id,ipv4):
     db_alloc.is_used = False
     db_alloc.hostname = None
     db_alloc.description = None
+    db_alloc.is_dhcp = False
+    db_alloc.is_gateway = False
     db.session.commit()
     flash("Allocation Deleted", 'warning')
     return redirect(url_for('base.allocations',net_id=net_id,page=request.args.get('page', type=int)))
@@ -244,6 +249,12 @@ def allocation_search(net_id):
         if 'dhcp' in search:
             for alloc in db_alloc:
                 if alloc.is_dhcp:
+                    obj_list.append(alloc)
+    
+        ## GATEWAY
+        if 'gateway' in search:
+            for alloc in db_alloc:
+                if alloc.is_gateway:
                     obj_list.append(alloc)
     else:
         # BASIC SEARCH
