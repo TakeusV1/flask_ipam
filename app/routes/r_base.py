@@ -152,18 +152,18 @@ def allocation_edit_modal(net_id, ipv4):
         # Special Allocation
         if int(form.is_special.data) == 1:
             # DHCP
-            db_alloc.is_dhcp == True
-            db_alloc.is_gateway == False
+            db_alloc.is_dhcp = True
+            db_alloc.is_gateway = False
             db_alloc.hostname = None
             db_alloc.description = "DHCP Allocation"
         elif int(form.is_special.data) == 2:
             # Gateway
-            db_alloc.is_dhcp == False
-            db_alloc.is_gateway == True
+            db_alloc.is_dhcp = False
+            db_alloc.is_gateway = True
         else:
             # None
-            db_alloc.is_dhcp == False
-            db_alloc.is_gateway == False
+            db_alloc.is_dhcp = False
+            db_alloc.is_gateway = False
 
         db.session.commit()
         flash("Allocation Updated", 'success')
