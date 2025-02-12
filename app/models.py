@@ -23,6 +23,7 @@ class Allocation(db.Model):
     is_used = db.Column(db.Boolean(),default=False)
     is_dhcp = db.Column(db.Boolean(),default=False)
     is_gateway = db.Column(db.Boolean(),default=False)
+    is_decom = db.Column(db.Boolean(),default=False)
     device_id = db.Column(db.Integer(),db.ForeignKey('inventory.id'))
     
 class Inventory(db.Model):

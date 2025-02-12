@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Blueprint, request, render_template, flash, redirect, url_for
+from flask import Blueprint, request, render_template, flash, redirect, url_for, session
 from flask_login import login_required, current_user
 from ipaddress import IPv4Network, IPv4Address
 
@@ -78,34 +78,42 @@ def allocations(net_id):
     
     active_page = request.args.get('page', type=int)
     if active_page == None:
-        active_page = 0
+        active_page = 1
     
     next_page = active_page+1
     prev_page = active_page-1
     
+    if request.args.get('items', type=int) != None:
+        session['items'] = request.args.get('items', type=int)
+    try:
+        if session['items'] == None:
+            session['items'] = 15
+    except:
+        session['items'] = 15
+    
     db_network = Network.query.filter_by(id=net_id).first()
-    db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=15 )
+    db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=session['items'] )
         
     form = NewAllocationForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        network = IPv4Network(f"{str(db_network.network_address)}/{str(db_network.prefix)}")
+    ##if request.method == 'POST' and form.validate_on_submit():
+    ##    network = IPv4Network(f"{str(db_network.network_address)}/{str(db_network.prefix)}")
         # Check if IPv4 Address is already allocated
-        if Allocation.query.filter_by(ipv4=str(form.ipv4.data)).first() != None:
-            flash("IPv4 Address Already Allocated", 'danger')
-            return redirect(url_for('base.allocations', net_id=net_id, page=active_page))
-        # Check if IPv4 Address is in the Network
-        if IPv4Address(form.ipv4.data) in network.hosts():
-            add_alloc = Allocation(ipv4=str(form.ipv4.data), net_id=db_network.id, hostname=str(form.host_name.data), description=str(form.host_desc.data))
-            db.session.add(add_alloc)
-            db.session.commit()
-            flash("Allocation Added", 'success')
-            return redirect(url_for('base.allocations', net_id=net_id, page=active_page))
+    ##    if Allocation.query.filter_by(ipv4=str(form.ipv4.data)).first() != None:
+    ##        flash("IPv4 Address Already Allocated", 'danger')
+    ##        return redirect(url_for('base.allocations', net_id=net_id, page=active_page))
+    ##    # Check if IPv4 Address is in the Network
+    ##    if IPv4Address(form.ipv4.data) in network.hosts():
+    ##        add_alloc = Allocation(ipv4=str(form.ipv4.data), net_id=db_network.id, hostname=str(form.host_name.data), description=str(form.host_desc.data))
+    ##        db.session.add(add_alloc)
+    ##        db.session.commit()
+    ##        flash("Allocation Added", 'success')
+    ##        return redirect(url_for('base.allocations', net_id=net_id, page=active_page))
         # If not in Network
-        flash("Invalid IPv4 Address", 'danger')
-        return redirect(url_for('base.allocations', net_id=net_id, page=active_page))
+    ##    flash("Invalid IPv4 Address", 'danger')
+    ##    return redirect(url_for('base.allocations', net_id=net_id, page=active_page))
     # If Form Errors
-    elif form.errors:
-        flash(form.errors, 'danger')
+    ##elif form.errors:
+    ##    flash(form.errors, 'danger')
     
     return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, form=form, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page, next_page=next_page, prev_page=prev_page, navcolor='dark')
 
@@ -193,7 +201,18 @@ def allocation_delete(net_id,ipv4):
     db_alloc.is_dhcp = False
     db_alloc.is_gateway = False
     db.session.commit()
-    flash("Allocation Deleted", 'warning')
+    flash("Allocation Removed", 'warning')
+    return redirect(url_for('base.allocations',net_id=net_id,page=request.args.get('page', type=int)))
+
+@base.get('/network/<int:net_id>/allocations/<string:ipv4>/decom/<int:action>')
+@login_required
+def allocation_decom(net_id,ipv4,action):
+    db_alloc = Allocation.query.filter_by(net_id=net_id,ipv4=ipv4).first()
+    if action == 1:
+        db_alloc.is_decom = True
+    else:
+        db_alloc.is_decom = False
+    db.session.commit()
     return redirect(url_for('base.allocations',net_id=net_id,page=request.args.get('page', type=int)))
 
 @base.get('/network/<int:net_id>/delete')
@@ -206,6 +225,7 @@ def network_delete(net_id):
         if db_alloc != None:
             for alloc in db_alloc:
                 db.session.delete(alloc)
+
         db.session.delete(db_network)
         db.session.commit()
         flash("Network Deleted", 'warning')
@@ -230,7 +250,6 @@ def allocation_search(net_id):
         # AND
         if ',' in search:            
             for alloc in db_alloc:
-                print(search.split(','))
                 if alloc.ipv4.lower() in search.split(','):
                     obj_list.append(alloc)
         # BETWEEN
@@ -245,7 +264,6 @@ def allocation_search(net_id):
                 if int(alloc.ipv4.split('.')[-1]) <= temp_2 and int(alloc.ipv4.split('.')[-1]) >= temp_1:
                     obj_list.append(alloc)
         # DHCP
-        print(search)
         if 'dhcp' in search:
             for alloc in db_alloc:
                 if alloc.is_dhcp:
@@ -256,6 +274,19 @@ def allocation_search(net_id):
             for alloc in db_alloc:
                 if alloc.is_gateway:
                     obj_list.append(alloc)
+        
+        ## DECOM
+        if 'decom' in search:
+            for alloc in db_alloc:
+                if alloc.is_decom:
+                    obj_list.append(alloc)
+        
+                ## DECOM
+        if 'used' in search:
+            for alloc in db_alloc:
+                if alloc.is_used:
+                    obj_list.append(alloc)
+        
     else:
         # BASIC SEARCH
         for alloc in db_alloc:
@@ -268,4 +299,4 @@ def allocation_search(net_id):
                 if alloc.description.lower().startswith(search):
                     obj_list.append(alloc)
     
-    return render_template('panel/_search-entry.html',db_alloc=obj_list,Inventory=Inventory,network=db_network)	
+    return render_template('panel/_table-alloc.html',allocations=obj_list,Inventory=Inventory,network=db_network)

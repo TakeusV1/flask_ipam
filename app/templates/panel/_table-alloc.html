@@ -1,4 +1,4 @@
-{% for allocation in db_alloc %}
+{% for allocation in allocations %}
 <tr>
     <td><b>{{allocation.ipv4}}</b></td>
     <td>{{allocation.hostname}}</td>
@@ -10,6 +10,9 @@
         N/A
         {% endif %}
     </td>
+    <td>{{allocation.is_dhcp}}</td>
+    <td>{{allocation.is_gateway}}</td>
+    <td>{{allocation.is_decom}}</td>
     <td>
         {% if allocation.is_used %}
         <button 
@@ -22,13 +25,18 @@
             style="padding-top:1px;padding-bottom:1px"
             > Edit
         </button>
+        {% if allocation.is_decom %}
+        <a href="{{ url_for('base.allocation_decom',action=2,net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" class="btn btn-sm btn-outline-primary" style="padding-top:1px;padding-bottom:1px">Undecom</a>
+        {% else %}
+        <a href="{{ url_for('base.allocation_decom',action=1,net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" class="btn btn-sm btn-outline-warning" style="padding-top:1px;padding-bottom:1px">Decom</a>
+        {% endif %}
         <button 
             hx-get="{{ url_for('base.allocation_del_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
             hx-trigger="click" 
             hx-target="#modal-del" 
             data-bs-toggle="modal" 
             data-bs-target="#modal-del" 
-            class="btn btn-sm btn-outline-warning"
+            class="btn btn-sm btn-outline-danger"
             style="padding-top:1px;padding-bottom:1px"
             > Unallocate
         </button>
