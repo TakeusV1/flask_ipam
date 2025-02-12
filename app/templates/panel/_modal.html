@@ -9,11 +9,13 @@
         </div>
         <div class="modal-body">
             <p>
-                {{ modal.body|safe }}<br><br>
+                {{ modal.body|safe }}<hr>
                 {% for entry in form %}
                 {% if entry.id != 'csrf_token' %}
+                <div class="mb-3">
                 {{ entry.label(class="form-label") }}<br>
                 {{ entry(class="form-control") }}
+                </div>
                 {% endif %}
                 {% endfor %}
             </p>

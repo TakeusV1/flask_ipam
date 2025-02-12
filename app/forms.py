@@ -29,3 +29,4 @@ class ChangePasswordForm(FlaskForm):
 class ChangeAllocationForm(FlaskForm):
     hostname = StringField(validators=[Length(max=128)])
     description = StringField(validators=[Length(max=128)])
+    is_special = SelectField(choices=[(0,'None'),(1,'DHCP'),(2,'Gateway')],validators=[DataRequired()],label='Special USE ?')

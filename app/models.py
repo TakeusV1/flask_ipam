@@ -21,6 +21,8 @@ class Allocation(db.Model):
     hostname = db.Column(db.String(32))
     description = db.Column(db.String(64))
     is_used = db.Column(db.Boolean(),default=False)
+    is_dhcp = db.Column(db.Boolean(),default=False)
+    is_gateway = db.Column(db.Boolean(),default=False)
     device_id = db.Column(db.Integer(),db.ForeignKey('inventory.id'))
     
 class Inventory(db.Model):

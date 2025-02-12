@@ -8,7 +8,7 @@ app_debug = True
 app_maintenance = False
 
 app_name = 'takeus-ipam'
-app_version = 'V1.0'    
+app_version = 'V1.1'    
 app_release_date = '02/2025'
 app_url = "http://127.0.0.1"
 

@@ -129,11 +129,11 @@ def network_del_modal(net_id):
 @login_required
 def allocation_del_modal(net_id,ipv4):
     modal = {
-        'title': 'Delete Allocation',
-        'body': f'Are you sure you want to delete <b>{ipv4}</b> allocation ?',
+        'title': 'Remove Allocation',
+        'body': f'Are you sure you want to remove <b>{ipv4}</b> allocation ?',
         'color': 'warning',
         'action': 'delete',
-        'action_text': 'Delete',
+        'action_text': 'Remove',
         'action_url': url_for('base.allocation_delete',net_id=net_id,ipv4=ipv4)
     }
     return render_template('panel/_modal.html', modal=modal, net_id=net_id, ipv4=ipv4, old_page=request.args.get('page', type=int), pagination_active=True)	
@@ -148,6 +148,23 @@ def allocation_edit_modal(net_id, ipv4):
     if form.validate_on_submit() and request.method == 'POST':
         db_alloc.hostname = str(form.hostname.data)
         db_alloc.description = str(form.description.data)
+        db_alloc.is_used = True
+        # Special Allocation
+        if int(form.is_special.data) == 1:
+            # DHCP
+            db_alloc.is_dhcp == True
+            db_alloc.is_gateway == False
+            db_alloc.hostname = None
+            db_alloc.description = "DHCP Allocation"
+        elif int(form.is_special.data) == 2:
+            # Gateway
+            db_alloc.is_dhcp == False
+            db_alloc.is_gateway == True
+        else:
+            # None
+            db_alloc.is_dhcp == False
+            db_alloc.is_gateway == False
+
         db.session.commit()
         flash("Allocation Updated", 'success')
         return redirect(url_for('base.allocations',net_id=net_id,page=request.args.get('page', type=int)))
@@ -163,12 +180,13 @@ def allocation_edit_modal(net_id, ipv4):
     return render_template('panel/_modal.html', modal=modal, form=form, old_page=request.args.get('page', type=int), pagination_active=True)	
 
 ## MODIFICATION ROUTES
-
-@base.get('/network/<int:net_id>/allocations/<string:ipv4>/delete')
+@base.get('/network/<int:net_id>/allocations/<string:ipv4>/unallocate')
 @login_required
 def allocation_delete(net_id,ipv4):
     db_alloc = Allocation.query.filter_by(net_id=net_id,ipv4=ipv4).first()
-    db.session.delete(db_alloc)
+    db_alloc.is_used = False
+    db_alloc.hostname = None
+    db_alloc.description = None
     db.session.commit()
     flash("Allocation Deleted", 'warning')
     return redirect(url_for('base.allocations',net_id=net_id,page=request.args.get('page', type=int)))
@@ -190,3 +208,53 @@ def network_delete(net_id):
     else:
         flash("Network Not Found", 'danger')
         return redirect(url_for('base.networks'))
+
+## HTMX SEARCH
+@base.post('/network/<int:net_id>/allocations/search')
+@login_required
+def allocation_search(net_id):
+    search = str(request.form['search']).lower() 
+      
+    db_network = Network.query.filter_by(id=net_id).first()
+    db_alloc = Allocation.query.filter_by(net_id=net_id).all()
+    obj_list = []
+    
+    # Advance Search
+    if '*' in search:
+        search = search.split("*")[1]
+        # AND
+        if ',' in search:            
+            for alloc in db_alloc:
+                print(search.split(','))
+                if alloc.ipv4.lower() in search.split(','):
+                    obj_list.append(alloc)
+        # BETWEEN
+        if '-' in search:
+            search = search.split('-')
+            if search[0].split('.')[-1] == '' or search[1].split('.')[-1] == '':
+                return "Invalid(s) Number(s)"
+            temp_1 = int(search[0].split('.')[-1])
+            temp_2 = int(search[1].split('.')[-1])
+            
+            for alloc in db_alloc:
+                if int(alloc.ipv4.split('.')[-1]) <= temp_2 and int(alloc.ipv4.split('.')[-1]) >= temp_1:
+                    obj_list.append(alloc)
+        # DHCP
+        print(search)
+        if 'dhcp' in search:
+            for alloc in db_alloc:
+                if alloc.is_dhcp:
+                    obj_list.append(alloc)
+    else:
+        # BASIC SEARCH
+        for alloc in db_alloc:
+            if alloc.ipv4.lower().startswith(search):
+                obj_list.append(alloc)
+            elif alloc.hostname != None:
+                if alloc.hostname.lower().startswith(search):
+                    obj_list.append(alloc)
+            elif alloc.description != None:
+                if alloc.description.lower().startswith(search):
+                    obj_list.append(alloc)
+    
+    return render_template('panel/_search-entry.html',db_alloc=obj_list,Inventory=Inventory,network=db_network)	

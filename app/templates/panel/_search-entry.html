@@ -1,0 +1,49 @@
+{% for allocation in db_alloc %}
+<tr>
+    <td><b>{{allocation.ipv4}}</b></td>
+    <td>{{allocation.hostname}}</td>
+    <td>{{allocation.description}}</td>
+    <td>
+        {% if Inventory.query.filter_by(id=allocation.device_id).first() %}
+        <a href="{{Inventory.query.filter_by(id=allocation.device_id).first().id}}" style="text-decoration:none;">link</a>
+        {% else %}
+        N/A
+        {% endif %}
+    </td>
+    <td>
+        {% if allocation.is_used %}
+        <button 
+            hx-get="{{ url_for('base.allocation_edit_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
+            hx-trigger="click" 
+            hx-target="#modal-edit" 
+            data-bs-toggle="modal" 
+            data-bs-target="#modal-edit" 
+            class="btn btn-sm btn-outline-info"
+            style="padding-top:1px;padding-bottom:1px"
+            > Edit
+        </button>
+        <button 
+            hx-get="{{ url_for('base.allocation_del_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
+            hx-trigger="click" 
+            hx-target="#modal-del" 
+            data-bs-toggle="modal" 
+            data-bs-target="#modal-del" 
+            class="btn btn-sm btn-outline-warning"
+            style="padding-top:1px;padding-bottom:1px"
+            > Unallocate
+        </button>
+        {% else %}
+        <button 
+            hx-get="{{ url_for('base.allocation_edit_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
+            hx-trigger="click" 
+            hx-target="#modal-edit" 
+            data-bs-toggle="modal" 
+            data-bs-target="#modal-edit" 
+            class="btn btn-sm btn-outline-success"
+            style="padding-top:1px;padding-bottom:1px"
+            > Allocate
+        </button>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
