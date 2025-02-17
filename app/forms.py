@@ -11,13 +11,7 @@ class NewPrefixForm(FlaskForm):
     prefix = SelectField(choices=[(30,'/30'),(29,'/29'),(28,'/28'),(27,'/27'),(26,'/26'),(25,'/25'),(24,'/24'),(23,'/23'),(22,'/22')],validators=[DataRequired()])
     description = StringField(validators=[Length(max=128)])
     
-class NewAllocationForm(FlaskForm):
-    ipv4 = StringField(validators=[DataRequired(),IPAddress(ipv4=True),Length(max=128)])
-    host_name = StringField(validators=[Length(max=128)])
-    host_desc = StringField(validators=[Length(max=128)])
-    #host_type = SelectField(choices=[(0,'None'),(1,'Computer'),(2,'Server'),(3,'Virtual Machine'),(4,'Network Device'),(5,'Other')],validators=[DataRequired()])
-    
-class NewUserForm (FlaskForm):
+class NewUserForm(FlaskForm):
     username = StringField(validators=[DataRequired(),Length(max=128)])
     password = PasswordField(validators=[DataRequired(),Length(max=128)])
     is_admin = SelectField(choices=[(0,'No'),(1,'Yes')],validators=[DataRequired()])
@@ -30,3 +24,8 @@ class ChangeAllocationForm(FlaskForm):
     hostname = StringField(validators=[Length(max=128)])
     description = StringField(validators=[Length(max=128)])
     is_special = SelectField(choices=[(0,'None'),(1,'DHCP'),(2,'Gateway')],validators=[DataRequired()],label='Special USE ?')
+
+class NewInventoryItem(FlaskForm):
+    item_name = StringField(validators=[DataRequired(),Length(max=128)])
+    item_desc = PasswordField(validators=[Length(max=128)])
+    item_type = SelectField(choices=[(1,'Computer'),(2,'Server'),(3,'Virtual Machine'), (4,'Network Device'), (0,'Other')],validators=[DataRequired()])

@@ -26,9 +26,9 @@
                         <td>{{Allocation.query.filter_by(net_id=network.id,is_used=True).count()}} / {{network.hosts}} </td>
                         <td><b>{{network.description}}</b></td>
                         <td>
-                            <a href="{{ url_for('base.allocations',net_id=network.id) }}?page=1" class="btn btn-sm btn-outline-info" style="padding-top:1px;padding-bottom:1px">Allocations</a>
+                            <a href="{{ url_for('network.allocations',net_id=network.id) }}?page=1" class="btn btn-sm btn-outline-info" style="padding-top:1px;padding-bottom:1px">Allocations</a>
                             <button 
-                                hx-get="{{ url_for('base.network_del_modal',net_id=network.id) }}" 
+                                hx-get="{{ url_for('network.network_del_modal',net_id=network.id) }}" 
                                 hx-trigger="click" 
                                 hx-target="#modal-get" 
                                 data-bs-toggle="modal" 

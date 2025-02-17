@@ -5,7 +5,7 @@
     <div class="row">
         <!-- NETWORKS -->
         <div class="col-3">
-            <a href="{{ url_for('base.networks') }}" class="card text-bg-info mb-3 text-decoration-none">
+            <a href="{{ url_for('network.networks') }}" class="card text-bg-info mb-3 text-decoration-none">
                 <div class="card-header"><i class="bi bi-globe"></i> <b>Total Networks</b></div>
                 <div class="card-body">
                     <h1 class="card-title text-center">{{db_networks}}</h1>
@@ -14,7 +14,7 @@
         </div>
         <!-- TOTAL IP -->
         <div class="col-3">
-            <a href="{{ url_for('base.networks') }}" class="card text-bg-secondary mb-3 text-decoration-none" style="margin-bottom:1vh;">
+            <a href="{{ url_for('network.networks') }}" class="card text-bg-secondary mb-3 text-decoration-none" style="margin-bottom:1vh;">
                 <div class="card-header"><i class="bi bi-broadcast-pin"></i> <b>Total Allocations</b></div>
                 <div class="card-body">
                     <h1 class="card-title text-center">{{db_allocations}} / {{ available_alloc }}</h1>
@@ -75,12 +75,17 @@
     });
     /* Devices Chart */
     const ctx1 = document.getElementById('deviceschart');
+    var computers = JSON.parse('{{ Inventory.query.filter_by(host_type=1).count() | tojson }}');
+    var servers = JSON.parse('{{ Inventory.query.filter_by(host_type=2).count() | tojson }}');
+    var virtual_machines = JSON.parse('{{ Inventory.query.filter_by(host_type=3).count() | tojson }}');
+    var networks_devices = JSON.parse('{{ Inventory.query.filter_by(host_type=4).count() | tojson }}');
+    var others = JSON.parse('{{ Inventory.query.filter_by(host_type=0).count() | tojson }}');
     new Chart(ctx1, {
       type: 'doughnut',
       data: {
         labels: ['Computers', 'Servers', 'VM', 'Network Devices', 'Others'],
         datasets: [{
-          data: [1, 1, 1, 1, 1],
+          data: [computers, servers, virtual_machines, networks_devices, others],
           borderWidth: 2
         }]
       },

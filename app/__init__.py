@@ -10,6 +10,8 @@ from app.models import *
 from app.extensions import *
 
 from app.routes.r_base import base
+from app.routes.r_networks import network
+from app.routes.r_inventory import inventory
 from app.routes.r_auth import auth
 from app.routes.r_adm import admin
 
@@ -30,6 +32,8 @@ def create_app():
     
     ## BLUEPRINTS
     app.register_blueprint(base, url_prefix='/')
+    app.register_blueprint(network, url_prefix='/network')
+    app.register_blueprint(inventory, url_prefix='/inventory')
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(admin, url_prefix='/admin')
     

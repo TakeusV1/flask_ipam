@@ -28,17 +28,16 @@ class Allocation(db.Model):
     
 class Inventory(db.Model):
     id = db.Column(db.Integer(),primary_key=True,unique=True)
-    ip_addr = db.Column(db.Text())
     # Host Information
     host_type = db.Column(db.Integer())
-    host_name = db.Column(db.String(32))
+    host_name = db.Column(db.String(64))
     host_desc = db.Column(db.String(64))
     # Hardware Information
-    host_model = db.Column(db.String(32))
-    host_manufacturer = db.Column(db.String(32))
-    host_serialnumber = db.Column(db.String(32))
+    host_model = db.Column(db.String(64))
+    host_manufacturer = db.Column(db.String(64))
+    host_serialnumber = db.Column(db.String(64))
     # Network Information
-    host_os = db.Column(db.String(32))
-    host_location = db.Column(db.String(32))
-    host_owner = db.Column(db.String(32))
-    host_contact = db.Column(db.String(32))
+    host_os = db.Column(db.String(64))
+    host_location = db.Column(db.String(64))
+    host_owner = db.Column(db.String(64))
+    host_contact = db.Column(db.String(64))

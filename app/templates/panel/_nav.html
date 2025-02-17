@@ -10,16 +10,17 @@
                 <a class="nav-link {% if is_dash %}active{% endif %}" href="{{ url_for('base.dashboard') }}"><i class="bi bi-house-door-fill"></i> Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if is_networks %}active{% endif %}" href="{{ url_for('base.networks') }}"><i class="bi bi-globe"></i> Network(s)</a>
+                <a class="nav-link {% if is_networks %}active{% endif %}" href="{{ url_for('network.networks') }}"><i class="bi bi-globe"></i> Network(s)</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle disabled" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-archive-fill"></i> Inventory</a>
+                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-archive-fill"></i> Inventory</a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-pc-display"></i> Computers</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-server"></i> Servers</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-server"></i> Virtual Machines</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-ethernet"></i> Networks Devices</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-collection"></i> Others</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('inventory.list_items',item_type=1) }}"><i class="bi bi-pc-display"></i> Computers</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('inventory.list_items',item_type=2) }}"><i class="bi bi-server"></i> Servers</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('inventory.list_items',item_type=3) }}"><i class="bi bi-server"></i> Virtual Machines</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('inventory.list_items',item_type=4) }}"><i class="bi bi-ethernet"></i> Networks Devices</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('inventory.list_items',item_type=0) }}"><i class="bi bi-collection"></i> Others</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('inventory.add_item') }}"><i class="bi bi-plus-circle"></i> ADD NEW</a></li>
                 </ul>
             </li>
             {% if current_user.is_admin %}
