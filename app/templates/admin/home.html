@@ -22,6 +22,7 @@
                                 <th>ID</th>
                                 <th>Username</th>
                                 <th>Admin User</th>
+                                <th>RO</th>
                                 <th>Last Connection</th>
                                 <th>Actions</th>
                             </tr>
@@ -32,6 +33,7 @@
                                 <td>{{user.id}}</td>
                                 <td>{{user.username}}</td>
                                 <td>{{user.is_admin}}</td>
+                                <td>{{user.is_reado}}</td>
                                 <td>{% if user.dat_last != None %}{{user.dat_last.strftime('%Y-%m-%d %H:%M:%S')}}{%else%}N/A{%endif%}</td>
                                 <td>
                                     <button 
@@ -79,6 +81,10 @@
                         <div class="mb-3">
                             <label class="form-label">Is Admin?</label>
                             {{ form.is_admin(class="form-control") }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Is Readonly?</label>
+                            {{ form.is_readonly(class="form-control") }}
                         </div>
                         <button type="submit" class="btn btn-secondary w-100">Submit</button>
                     </form>

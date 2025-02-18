@@ -1,5 +1,5 @@
 {% if modal.modal_type == 'form' %}
-<div class="modal-dialog modal-dialog-centered">
+<div class="modal-dialog">
     <form method="post" action="{{modal.form_url}}{% if pagination_active %}?page={{old_page}}{%endif%}">
     {{ form.csrf_token }}
     <div class="modal-content">
@@ -8,8 +8,29 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+            {% if modal.inventory %}
+            {{ modal.body|safe }}<hr>
+            <div class="row">
+                {% for entry in form %}
+                {% if entry.id != 'csrf_token' %}
+                {% if entry.id == 'item_ip_allocations' %}
+                <div class="col-12">
+                    {{ entry.label(class="form-label") }}<br>
+                    {{ entry(class="form-control",placeholder='192.168.1.1,192.168.1.2 (separate with ,)') }}
+                </div>
+                {% else %}
+                <div class="col-6">
+                    <div class="mb-2">
+                        {{ entry.label(class="form-label") }}<br>
+                        {{ entry(class="form-control") }}
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% else %}
             <p>
-                {{ modal.body|safe }}<hr>
                 {% for entry in form %}
                 {% if entry.id != 'csrf_token' %}
                 <div class="mb-3">
@@ -19,6 +40,7 @@
                 {% endif %}
                 {% endfor %}
             </p>
+            {% endif %}
         </div>  
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -27,11 +49,36 @@
     </div>
     </form>
 </div>
+{% elif modal.modal_type == 'infos' %}
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title text-{{modal.color}}">{{ modal.title|safe }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                {% for info in informations %}
+                <div class="{{info[2]}}">
+                    <div class="mb-3">
+                        <label for="{{info[0]}}">{{info[0]}}</label>
+                        <input class="form-control" type="text" id="{{info[0]}}" value="{{info[1]}}" readonly>
+                        <!--{{ key }} : {{ value }}-->
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>  
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
 {% else %}
 <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title text-{{modal.color}}">{{ modal.title }}</h5>
+            <h5 class="modal-title text-{{modal.color}}">{{ modal.title|safe }}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

@@ -1,5 +1,4 @@
-from datetime import datetime
-from flask import Blueprint, request, render_template, flash, redirect, url_for, session
+from flask import Blueprint, request, render_template, flash, redirect, url_for, session, abort
 from flask_login import login_required, current_user
 from ipaddress import IPv4Network, IPv4Address
 
@@ -16,25 +15,26 @@ network = Blueprint('network', __name__)
 def networks():
     networks = Network.query.all()
     form = NewPrefixForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        try:
-            network = IPv4Network(f"{str(form.subnet.data)}/{str(form.prefix.data)}", False)
-            
-            add_net = Network(network_address=str(network.network_address),prefix=network.prefixlen,hosts=network.num_addresses-2,description=str(form.description.data))
-            db.session.add(add_net)
-            db.session.commit()
-            
-            for ip in network.hosts():
-                db.session.add(Allocation(ipv4=str(ip), net_id=add_net.id))
-            
-            db.session.commit()
-            return redirect(url_for('network.networks'))
-            
-        except:
-            flash("Invalid Subnet or Prefix", 'danger')
-            return redirect(url_for('network.networks'))        
-    elif form.errors:
-        flash(form.errors, 'danger')
+    if current_user.is_reado == False:
+        if request.method == 'POST' and form.validate_on_submit():
+            try:
+                network = IPv4Network(f"{str(form.subnet.data)}/{str(form.prefix.data)}", False)
+                
+                add_net = Network(network_address=str(network.network_address),prefix=network.prefixlen,hosts=network.num_addresses-2,description=str(form.description.data))
+                db.session.add(add_net)
+                db.session.commit()
+                
+                for ip in network.hosts():
+                    db.session.add(Allocation(ipv4=str(ip), net_id=add_net.id))
+                
+                db.session.commit()
+                return redirect(url_for('network.networks'))
+                
+            except:
+                flash("Invalid Subnet or Prefix", 'danger')
+                return redirect(url_for('network.networks'))        
+        elif form.errors:
+            flash(form.errors, 'danger')
     
     return render_template('panel/networks.html', title="Prefixes", is_networks=True, app_version=app_version, prefixes=networks, form=form, Allocation=Allocation, navcolor='dark')
 
@@ -95,6 +95,9 @@ def allocation_del_modal(net_id,ipv4):
 @network.route('/<int:net_id>/allocations/<string:ipv4>/edit_modal', methods=['GET','POST'])
 @login_required
 def allocation_edit_modal(net_id, ipv4):
+    if current_user.is_reado:
+        return abort(403)
+    
     db_alloc = Allocation.query.filter_by(ipv4=ipv4).first()
         
     form = ChangeAllocationForm()
@@ -130,15 +133,28 @@ def allocation_edit_modal(net_id, ipv4):
         'action_text': 'Save',
         'form_url': url_for('network.allocation_edit_modal',net_id=db_alloc.net_id,ipv4=db_alloc.ipv4),
     }
+    
     old_page = request.args.get('page', type=int)
     if old_page == 0:
         old_page = 1
+    
+    form.hostname.default = db_alloc.hostname
+    form.description.default = db_alloc.description
+    if db_alloc.is_dhcp:
+        form.is_special.default = 1
+    elif db_alloc.is_gateway:
+        form.is_special.default = 2
+    form.process()
+    
     return render_template('panel/_modal.html', modal=modal, form=form, old_page=old_page, pagination_active=True)	
 
 ## MODIFICATION ROUTES
 @network.get('/<int:net_id>/allocations/<string:ipv4>/unallocate')
 @login_required
 def allocation_delete(net_id,ipv4):
+    if current_user.is_reado:
+        return abort(403)
+    
     db_alloc = Allocation.query.filter_by(net_id=net_id,ipv4=ipv4).first()
     db_alloc.is_used = False
     db_alloc.hostname = None
@@ -152,6 +168,9 @@ def allocation_delete(net_id,ipv4):
 @network.get('/<int:net_id>/allocations/<string:ipv4>/decom/<int:action>')
 @login_required
 def allocation_decom(net_id,ipv4,action):
+    if current_user.is_reado:
+        return abort(403)
+    
     db_alloc = Allocation.query.filter_by(net_id=net_id,ipv4=ipv4).first()
     if action == 1:
         db_alloc.is_decom = True
@@ -163,6 +182,9 @@ def allocation_decom(net_id,ipv4,action):
 @network.get('/<int:net_id>/delete')
 @login_required
 def network_delete(net_id):
+    if current_user.is_reado:
+        return abort(403)
+    
     db_network = Network.query.filter_by(id=net_id).first()
     db_alloc = Allocation.query.filter_by(net_id=db_network.id).all()
     

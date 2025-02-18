@@ -6,6 +6,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(16))
     password = db.Column(db.String(32),unique=True)
     is_admin = db.Column(db.Boolean(),default=False)
+    is_reado = db.Column(db.Boolean(),default=False)
     dat_last = db.Column(db.DateTime())
     
 class Network(db.Model):
@@ -41,3 +42,5 @@ class Inventory(db.Model):
     host_location = db.Column(db.String(64))
     host_owner = db.Column(db.String(64))
     host_contact = db.Column(db.String(64))
+    ## Allocation(s)
+    host_allocations = db.Column(db.Text()) 

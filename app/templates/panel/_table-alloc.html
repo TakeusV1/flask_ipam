@@ -5,7 +5,16 @@
     <td>{{allocation.description}}</td>
     <td>
         {% if Inventory.query.filter_by(id=allocation.device_id).first() %}
-        <a href="{{Inventory.query.filter_by(id=allocation.device_id).first().id}}" style="text-decoration:none;">link</a>
+        <button 
+            hx-get="{{ url_for('inventory.item_view_modal',item_id=allocation.device_id) }}" 
+            hx-trigger="click" 
+            hx-target="#modal-view" 
+            data-bs-toggle="modal" 
+            data-bs-target="#modal-view" 
+            class="btn btn-sm btn-outline-primary"
+            style="padding-top:1px;padding-bottom:1px"
+        > Details
+        </button>
         {% else %}
         N/A
         {% endif %}
@@ -13,6 +22,7 @@
     <td>{{allocation.is_dhcp}}</td>
     <td>{{allocation.is_gateway}}</td>
     <td>{{allocation.is_decom}}</td>
+    {% if current_user.is_reado == False %}
     <td>
         {% if allocation.is_used %}
         <button 
@@ -53,5 +63,6 @@
         </button>
         {% endif %}
     </td>
+    {% endif %}
 </tr>
 {% endfor %}

@@ -26,10 +26,13 @@ def home():
             return redirect(url_for('admin.home'))
         
         is_admin = False
+        is_readonly = False
         if int(form.is_admin.data) == 1:
             is_admin = True
+        if int(form.is_readonly.data) == 1:
+            is_readonly = True
         
-        db.session.add(User(username=form.username.data, password=generate_password_hash(form.password.data), is_admin=is_admin))
+        db.session.add(User(username=form.username.data, password=generate_password_hash(form.password.data), is_admin=is_admin, is_reado=is_readonly))
         db.session.commit()
         flash("User Created", 'success')
         return redirect(url_for('admin.home'))
@@ -67,8 +70,11 @@ def user_modal_edit(user_id):
     if form.validate_on_submit() and request.method == 'POST':
         user.password = generate_password_hash(form.password.data)
         user.is_admin = False
+        user.is_reado = False
         if int(form.is_admin.data) == 1:
             user.is_admin = True
+        if int(form.is_readonly.data) == 1:
+            user.is_reado = True
         db.session.commit()
         flash("Informations Changed", 'success')
         return redirect(url_for('admin.home'))
