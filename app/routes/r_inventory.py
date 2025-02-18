@@ -145,6 +145,11 @@ def item_edit_modal(item_id):
             db_item.host_model = form.item_model.data
         else:
             db_item.host_model = None
+        # Manufacturer
+        if form.item_manufacturer.data != '' and form.item_manufacturer.data != 'None':
+            db_item.host_manufacturer = form.item_manufacturer.data
+        else:
+            db_item.host_serialnumber = None
         # Serial Number
         if form.item_serial_number.data != '' and form.item_serial_number.data != 'None':
             db_item.host_serialnumber = form.item_serial_number.data
