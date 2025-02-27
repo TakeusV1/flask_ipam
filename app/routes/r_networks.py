@@ -251,7 +251,7 @@ def allocation_search(net_id):
                 ## DECOM
         if 'used' in search:
             for alloc in db_alloc:
-                if alloc.is_used:
+                if alloc.is_used and alloc.is_dhcp == False:
                     obj_list.append(alloc)
         
     else:

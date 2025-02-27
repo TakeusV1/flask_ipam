@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="mb-3">
                 <input class="form-control" type="search"
-                    name="search" placeholder="Begin Typing To Search Users..."
+                    name="search" placeholder="Begin Typing To Search Allocation(s)..."
                     hx-post="{{ url_for('network.allocation_search',net_id=network.id) }}"
                     hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
                     hx-target="#search-results"
