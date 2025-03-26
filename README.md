@@ -10,3 +10,7 @@ _(I'm not an experienced developer, just a tinkerer)_
 ---
 ![image](https://github.com/user-attachments/assets/44dac68f-e2e4-4d53-9158-9597de0dab5b)
 ![image](https://github.com/user-attachments/assets/5767a3dc-d99c-4c3e-bb88-c9c92049f58a)
+
+---
+- Installation : [here](install.md)
+- Sources : [here](sources.md)
