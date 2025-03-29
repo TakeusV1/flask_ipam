@@ -14,3 +14,9 @@ _(I'm not an experienced developer, just a tinkerer)_
 ---
 - Installation : [here](install.md)
 - Sources : [here](sources.md)
+
+## Docker Compose
+The Docker image has a built in admin account, **PLEASE CHANGE PASSWORD AFTER INITIAL LOG IN**
+- Username: admin
+- Password: PleaseChangeMe
+Use docker-compose.yml file to deploy.
