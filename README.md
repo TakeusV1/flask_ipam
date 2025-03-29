@@ -18,5 +18,6 @@ _(I'm not an experienced developer, just a tinkerer)_
 ## Docker Compose
 The Docker image has a built in admin account, **PLEASE CHANGE PASSWORD AFTER INITIAL LOG IN**
 - Username: admin
-- Password: PleaseChangeMe
+- Password: _PleaseChangeMe_
+<br>
 Use docker-compose.yml file to deploy.
