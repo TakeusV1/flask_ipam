@@ -161,6 +161,7 @@ def allocation_delete(net_id,ipv4):
     db_alloc.description = None
     db_alloc.is_dhcp = False
     db_alloc.is_gateway = False
+    db_alloc.is_decom = False
     db.session.commit()
     flash("Allocation Removed", 'warning')
     return redirect(url_for('network.allocations',net_id=net_id,page=request.args.get('page', type=int)))
