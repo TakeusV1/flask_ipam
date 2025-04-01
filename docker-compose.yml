@@ -1,7 +1,7 @@
 name: Flask-IPAM
 services:
   flask-ipam:
-    image: ghcr.io/cafrays/flask_ipam:v1.2
+    image: ghcr.io/cafrays/flask_ipam:latest
     container_name: flask-ipam
     restart: unless-stopped
     ports:
