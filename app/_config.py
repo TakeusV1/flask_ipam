@@ -1,6 +1,8 @@
 ##########################################################
 ############# CONFIGURATION FILE | Flask IPAM ############
 
+import random, string
+
 ## Flask Server (For DEV)
 app_ip = '127.0.0.1'
 app_port = 80
@@ -13,8 +15,9 @@ app_release_date = '02/2025'
 app_url = "http://127.0.0.1"
 
 class Configuration:
-    # openssl rand -hex 32
-    SECRET_KEY = 'change_me'
+    # replace SECRET_KEY with value from "openssl rand -hex 32" or similar for STATIC sessions
+    # With actual configuration, every application restart, user have to re-login...
+    SECRET_KEY = ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(32))
     # DB CONFIG
     SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
