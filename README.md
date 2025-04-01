@@ -17,3 +17,5 @@ _(I'm not an experienced developer, just a tinkerer)_
 
 ### Docker Compose
 you have to build the docker image first (with Dockerfile).
+- example : `docker build -t fipam_docker .`
+- You have to generate the database by creating the first user via “setup.py”, create an “instance” folder and put the “database.db” file in it.
