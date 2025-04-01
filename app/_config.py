@@ -12,7 +12,7 @@ app_maintenance = False
 app_name = 'takeus-ipam'
 app_version = 'V1.3'    
 app_release_date = '02/2025'
-app_url = "http://127.0.0.1"
+app_url = "http://0.0.0.0"
 
 class Configuration:
     # replace SECRET_KEY with value from "openssl rand -hex 32" or similar for STATIC sessions
