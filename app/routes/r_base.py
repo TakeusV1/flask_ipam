@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import login_required, current_user
 
-from app._config import app_version
+from app._config import app_version, app_theme
 
 from app.extensions import *
 from app.models import *
@@ -28,6 +28,7 @@ def dashboard():
     for available_ip in Network.query.all():
         available_alloc += int(available_ip.hosts)
     
+    print(app_theme)
     return render_template(
         'panel/dashboard.html',
         title="Dashboard", 
@@ -40,5 +41,6 @@ def dashboard():
         available_alloc=available_alloc,
         db_users=db_users,
         Inventory=Inventory,
-        navcolor='dark'
+        navcolor='dark',
+        app_theme=app_theme
     )

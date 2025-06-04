@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from app.extensions import *
 from app.models import *
 from app.forms import NewInventoryItem, ChangeInventoryItem
+from app._config import app_theme
 
 inventory = Blueprint('inventory', __name__)
 
@@ -20,8 +21,8 @@ def add_item():
             db.session.commit()
             flash("Item ADDED", 'success')
     
-    return render_template('panel/inventory_add.html', title='ADD ITEM', form=form, navcolor='success')
-    
+    return render_template('panel/inventory_add.html', title='ADD ITEM', form=form, navcolor='success', app_theme=app_theme)
+
 @inventory.route('/list/<int:item_type>', methods=['GET','POST'])
 @login_required
 def list_items(item_type):
@@ -43,7 +44,7 @@ def list_items(item_type):
     else:
         title = 'All'
     
-    return render_template('panel/inventory_view.html', title=title, item_list=db_items, current_page=item_type, navcolor='success')
+    return render_template('panel/inventory_view.html', title=title, item_list=db_items, current_page=item_type, navcolor='success', app_theme=app_theme)
 
 @inventory.route('/action/<int:item_id>/<int:action>', methods=['GET','POST'])
 @login_required

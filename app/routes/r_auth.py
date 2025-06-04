@@ -31,7 +31,7 @@ def login():
 
         flash("Bad username or password !", 'danger')
         return render_template("auth/login.html", title="Login", form=form, bad_password=True)
-    return render_template('auth/login.html', title="Login", form=form)
+    return render_template('auth/login.html', title="Login", form=form, app_theme=app_theme)
 
 @auth.route("/change",methods=['GET','POST'])
 @login_required
