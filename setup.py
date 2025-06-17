@@ -14,6 +14,7 @@ class User(db.Model):
     password = db.Column(db.String(32))
     is_admin = db.Column(db.Boolean(),default=False)
     is_reado = db.Column(db.Boolean(),default=False)
+    ui_theme = db.Column(db.String(16))
     dat_last = db.Column(db.DateTime())
     
 with app.app_context():

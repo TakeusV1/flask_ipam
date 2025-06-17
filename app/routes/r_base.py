@@ -28,7 +28,6 @@ def dashboard():
     for available_ip in Network.query.all():
         available_alloc += int(available_ip.hosts)
     
-    print(app_theme)
     return render_template(
         'panel/dashboard.html',
         title="Dashboard", 
@@ -41,6 +40,14 @@ def dashboard():
         available_alloc=available_alloc,
         db_users=db_users,
         Inventory=Inventory,
-        navcolor='dark',
-        app_theme=app_theme
+        navcolor='dark'
     )
+    
+@base.route("/theme/<string:name>",methods=['GET','POST'])
+@login_required
+def change_theme(name):
+    if name in app_theme:
+        current_user.ui_theme = name
+        db.session.commit()
+        return redirect(url_for('base.dashboard'))
+    return 'Invalid theme name', 400
