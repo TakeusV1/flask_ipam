@@ -20,13 +20,15 @@ def home():
 def dashboard():
     
     db_networks = Network.query.count()
-    db_allocations = Allocation.query.filter_by(is_used=True).count()
     db_inventory = Inventory.query.count()
     db_users = User.query.count()
     available_alloc = 0
+    db_allocations = 0
     
-    for available_ip in Network.query.all():
-        available_alloc += int(available_ip.hosts)
+    for network in Network.query.all():
+        if network.is_blacklisted == False:
+            available_alloc += int(network.hosts)
+            db_allocations += Allocation.query.filter_by(net_id=network.id, is_used=True).count()
     
     return render_template(
         'panel/dashboard.html',

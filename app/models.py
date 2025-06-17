@@ -12,10 +12,12 @@ class User(UserMixin, db.Model):
     
 class Network(db.Model):
     id = db.Column(db.Integer(),primary_key=True,unique=True)
+    vlan_id = db.Column(db.Integer(),unique=True)
     prefix = db.Column(db.Integer())
     network_address = db.Column(db.String(16),unique=True)
     hosts = db.Column(db.Integer())
     description = db.Column(db.String(32))
+    is_blacklisted = db.Column(db.Boolean(),default=False)
     
 class Allocation(db.Model):
     ipv4 = db.Column(db.String(16),primary_key=True,unique=True)

@@ -202,6 +202,31 @@ def network_delete(net_id):
         flash("Network Not Found", 'danger')
         return redirect(url_for('network.networks'))
 
+@network.get('/<int:net_id>/blacklist/<action>')
+@login_required
+def network_blacklist(net_id, action):
+    if current_user.is_reado:
+        return abort(403)
+    
+    db_network = Network.query.filter_by(id=net_id).first()
+    
+    if db_network == None:
+        flash("Network Not Found", 'danger')
+        return redirect(url_for('network.networks'))
+    
+    if action == 'blacklist':
+        db_network.is_blacklisted = True
+        db.session.commit()
+        flash("Network Blacklisted", 'warning')
+
+    elif action == 'unblacklist':
+        db_network.is_blacklisted = False
+        db.session.commit()
+        flash("Network Unblacklisted", 'success')
+
+    
+    return redirect(url_for('network.networks'))
+
 ## HTMX SEARCH
 @network.post('/<int:net_id>/allocations/search')
 @login_required
