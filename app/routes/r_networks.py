@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, flash, redirect, url_for,
 from flask_login import login_required, current_user
 from ipaddress import IPv4Network, IPv4Address
 
-from app._config import app_version, app_theme
+from app._config import app_version
 
 from app.extensions import *
 from app.models import *
@@ -36,7 +36,7 @@ def networks():
         elif form.errors:
             flash(form.errors, 'danger')
     
-    return render_template('panel/networks.html', title="Prefixes", is_networks=True, app_version=app_version, app_theme=app_theme, prefixes=networks, form=form, Allocation=Allocation, navcolor='dark')
+    return render_template('panel/networks.html', title="Prefixes", is_networks=True, app_version=app_version, prefixes=networks, form=form, Allocation=Allocation, navcolor='dark')
 
 @network.route('/<int:net_id>/allocations',methods=['GET','POST'])
 @login_required
@@ -60,7 +60,7 @@ def allocations(net_id):
     db_network = Network.query.filter_by(id=net_id).first()
     db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=session['items'] )
     
-    return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, app_theme=app_theme, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page, next_page=next_page, prev_page=prev_page, navcolor='dark')
+    return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page, next_page=next_page, prev_page=prev_page, navcolor='dark')
 
 ## MODAL ROUTES
 
@@ -201,6 +201,31 @@ def network_delete(net_id):
     else:
         flash("Network Not Found", 'danger')
         return redirect(url_for('network.networks'))
+
+@network.get('/<int:net_id>/blacklist/<action>')
+@login_required
+def network_blacklist(net_id, action):
+    if current_user.is_reado:
+        return abort(403)
+    
+    db_network = Network.query.filter_by(id=net_id).first()
+    
+    if db_network == None:
+        flash("Network Not Found", 'danger')
+        return redirect(url_for('network.networks'))
+    
+    if action == 'blacklist':
+        db_network.is_blacklisted = True
+        db.session.commit()
+        flash("Network Blacklisted", 'warning')
+
+    elif action == 'unblacklist':
+        db_network.is_blacklisted = False
+        db.session.commit()
+        flash("Network Unblacklisted", 'success')
+
+    
+    return redirect(url_for('network.networks'))
 
 ## HTMX SEARCH
 @network.post('/<int:net_id>/allocations/search')

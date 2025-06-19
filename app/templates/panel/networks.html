@@ -28,6 +28,11 @@
                         <td>
                             <a href="{{ url_for('network.allocations',net_id=network.id) }}?page=1" class="btn btn-sm btn-outline-info" style="padding-top:1px;padding-bottom:1px">Allocations</a>
                             {% if current_user.is_reado == False %}
+                            {% if network.is_blacklisted %}
+                            <a href="{{ url_for('network.network_blacklist',net_id=network.id,action='unblacklist') }}" class="btn btn-sm btn-outline-warning" style="padding-top:1px;padding-bottom:1px">UnBlacklist</a>
+                            {% else %}
+                            <a href="{{ url_for('network.network_blacklist',net_id=network.id,action='blacklist') }}" class="btn btn-sm btn-outline-warning" style="padding-top:1px;padding-bottom:1px">Blacklist</a>
+                            {% endif %}
                             <button 
                                 hx-get="{{ url_for('network.network_del_modal',net_id=network.id) }}" 
                                 hx-trigger="click" 

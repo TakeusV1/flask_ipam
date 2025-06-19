@@ -20,15 +20,16 @@ def home():
 def dashboard():
     
     db_networks = Network.query.count()
-    db_allocations = Allocation.query.filter_by(is_used=True).count()
     db_inventory = Inventory.query.count()
     db_users = User.query.count()
     available_alloc = 0
+    db_allocations = 0
     
-    for available_ip in Network.query.all():
-        available_alloc += int(available_ip.hosts)
+    for network in Network.query.all():
+        if network.is_blacklisted == False:
+            available_alloc += int(network.hosts)
+            db_allocations += Allocation.query.filter_by(net_id=network.id, is_used=True).count()
     
-    print(app_theme)
     return render_template(
         'panel/dashboard.html',
         title="Dashboard", 
@@ -41,6 +42,14 @@ def dashboard():
         available_alloc=available_alloc,
         db_users=db_users,
         Inventory=Inventory,
-        navcolor='dark',
-        app_theme=app_theme
+        navcolor='dark'
     )
+    
+@base.route("/theme/<string:name>",methods=['GET','POST'])
+@login_required
+def change_theme(name):
+    if name in app_theme:
+        current_user.ui_theme = name
+        db.session.commit()
+        return redirect(url_for('base.dashboard'))
+    return 'Invalid theme name', 400

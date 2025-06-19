@@ -11,11 +11,11 @@
     <!-- LINKS -->
     <link rel="icon" type="image/png" href="{{ url_for('static',filename='img/logo.png') }}" />
     <link rel="stylesheet" href="{{ url_for('static',filename='css/custom.css') }}"/>
-    {% if app_theme == 'zephyr'%}
+    {% if current_user.ui_theme == 'zephyr'%}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/zephyr.css') }}"/>
-    {% elif app_theme == 'lumen' %}
+    {% elif current_user.ui_theme == 'lumen' %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/lumen.css') }}"/>
-    {% elif app_theme == 'simplex' %}
+    {% elif current_user.ui_theme == 'simplex' %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/simplex.css') }}"/>
     {% else %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}"/>

@@ -7,14 +7,17 @@ class User(UserMixin, db.Model):
     password = db.Column(db.String(32))
     is_admin = db.Column(db.Boolean(),default=False)
     is_reado = db.Column(db.Boolean(),default=False)
+    ui_theme = db.Column(db.String(16))
     dat_last = db.Column(db.DateTime())
     
 class Network(db.Model):
     id = db.Column(db.Integer(),primary_key=True,unique=True)
+    vlan_id = db.Column(db.Integer(),unique=True)
     prefix = db.Column(db.Integer())
     network_address = db.Column(db.String(16),unique=True)
     hosts = db.Column(db.Integer())
     description = db.Column(db.String(32))
+    is_blacklisted = db.Column(db.Boolean(),default=False)
     
 class Allocation(db.Model):
     ipv4 = db.Column(db.String(16),primary_key=True,unique=True)
