@@ -9,6 +9,7 @@ class LoginForm(FlaskForm):
 class NewPrefixForm(FlaskForm):
     subnet = StringField(validators=[DataRequired(),IPAddress(ipv4=True),Length(max=128)])
     prefix = SelectField(choices=[(30,'/30'),(29,'/29'),(28,'/28'),(27,'/27'),(26,'/26'),(25,'/25'),(24,'/24'),(23,'/23'),(22,'/22')],validators=[DataRequired()])
+    vlan_id = IntegerField()
     description = StringField(validators=[Length(max=128)])
     
 class NewUserForm(FlaskForm):

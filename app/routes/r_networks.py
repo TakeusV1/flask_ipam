@@ -20,7 +20,12 @@ def networks():
             try:
                 network = IPv4Network(f"{str(form.subnet.data)}/{str(form.prefix.data)}", False)
                 
-                add_net = Network(network_address=str(network.network_address),prefix=network.prefixlen,hosts=network.num_addresses-2,description=str(form.description.data))
+                if int(form.vlan_id.data) == 0:
+                    vlan_id = None
+                else:
+                    vlan_id = int(form.vlan_id.data)
+                
+                add_net = Network(network_address=str(network.network_address),prefix=network.prefixlen,hosts=network.num_addresses-2,vlan_id=vlan_id,description=str(form.description.data))
                 db.session.add(add_net)
                 db.session.commit()
                 

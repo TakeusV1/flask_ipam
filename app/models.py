@@ -12,7 +12,7 @@ class User(UserMixin, db.Model):
     
 class Network(db.Model):
     id = db.Column(db.Integer(),primary_key=True,unique=True)
-    vlan_id = db.Column(db.Integer(),unique=True)
+    vlan_id = db.Column(db.Integer())
     prefix = db.Column(db.Integer())
     network_address = db.Column(db.String(16),unique=True)
     hosts = db.Column(db.Integer())
@@ -46,4 +46,4 @@ class Inventory(db.Model):
     host_owner = db.Column(db.String(64))
     host_contact = db.Column(db.String(64))
     ## Allocation(s)
-    host_allocations = db.Column(db.Text()) 
+    host_allocations = db.Column(db.Text())
