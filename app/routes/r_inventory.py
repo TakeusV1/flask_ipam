@@ -104,6 +104,7 @@ def item_view_modal(item_id):
         ('Owner',db_item.host_owner,'col-6'),
         ('Contact',db_item.host_contact,'col-6'),
         ('Allocations',db_item.host_allocations,'col-12'),
+        ('Notes',db_item.host_notes,'col-12'),
     ]
     
     return render_template('panel/_modal.html', modal=modal, item_id=item_id, informations=informations, old_page=request.args.get('page', type=int), pagination_active=True)
@@ -175,6 +176,11 @@ def item_edit_modal(item_id):
             db_item.host_contact = form.item_contact.data
         else:
             db_item.host_contact = None
+        # Notes
+        if form.item_notes.data != '' and form.item_notes.data != 'None':
+            db_item.host_notes = form.item_notes.data
+        else:
+            db_item.host_notes = None
         
         # Allocations
         db_existing_allocs = Allocation.query.filter_by(device_id=db_item.id).all()
@@ -219,6 +225,7 @@ def item_edit_modal(item_id):
     form.item_owner.default = db_item.host_owner
     form.item_contact.default = db_item.host_contact
     form.item_ip_allocations.default = db_item.host_allocations
+    form.item_notes.default = db_item.host_notes
     form.process()
     
     modal = {

@@ -13,7 +13,12 @@
             <div class="row">
                 {% for entry in form %}
                 {% if entry.id != 'csrf_token' %}
-                {% if entry.id == 'item_ip_allocations' %}
+                {% if entry.id == 'item_notes' %}
+                <div class="col-12">
+                    {{ entry.label(class="form-label") }}<br>
+                    {{ entry(class="form-control",placeholder='Notes, EX : Patch Panel/Switch...') }}
+                </div>
+                {% elif entry.id == 'item_ip_allocations' %}
                 <div class="col-12">
                     {{ entry.label(class="form-label") }}<br>
                     {{ entry(class="form-control",placeholder='192.168.1.1,192.168.1.2 (separate with ,)') }}

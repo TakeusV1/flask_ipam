@@ -47,3 +47,5 @@ class Inventory(db.Model):
     host_contact = db.Column(db.String(64))
     ## Allocation(s)
     host_allocations = db.Column(db.Text())
+    ### Others
+    host_notes = db.Column(db.Text())

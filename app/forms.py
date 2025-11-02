@@ -48,3 +48,6 @@ class ChangeInventoryItem(FlaskForm):
     item_contact = StringField(validators=[Length(max=64)])
     # Allocation(s)
     item_ip_allocations = StringField()
+    # Others
+    item_notes = StringField()
+    
