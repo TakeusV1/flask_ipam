@@ -1,6 +1,8 @@
 {% for allocation in allocations %}
+{% if session['hide_dhcp'] and allocation.is_dhcp %}
+{% else %}
 <tr>
-    <td><b>{{allocation.ipv4}}</b></td>
+    <td id="{{allocation.ipv4}}"><b>{{allocation.ipv4}}</b></td>
     <td>{{allocation.hostname}}</td>
     <td>{{allocation.description}}</td>
     <td>
@@ -26,7 +28,7 @@
     <td>
         {% if allocation.is_used %}
         <button 
-            hx-get="{{ url_for('network.allocation_edit_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
+            hx-get="{{ url_for('network.allocation_edit_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}&item={{allocation.ipv4}}" 
             hx-trigger="click" 
             hx-target="#modal-edit" 
             data-bs-toggle="modal" 
@@ -36,12 +38,12 @@
             > Edit
         </button>
         {% if allocation.is_decom %}
-        <a href="{{ url_for('network.allocation_decom',action=2,net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" class="btn btn-sm btn-outline-primary" style="padding-top:1px;padding-bottom:1px">Undecom</a>
+        <a href="{{ url_for('network.allocation_decom',action=2,net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}&item={{allocation.ipv4}}" class="btn btn-sm btn-outline-primary" style="padding-top:1px;padding-bottom:1px">Undecom</a>
         {% else %}
-        <a href="{{ url_for('network.allocation_decom',action=1,net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" class="btn btn-sm btn-outline-warning" style="padding-top:1px;padding-bottom:1px">Decom</a>
+        <a href="{{ url_for('network.allocation_decom',action=1,net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}&item={{allocation.ipv4}}" class="btn btn-sm btn-outline-warning" style="padding-top:1px;padding-bottom:1px">Decom</a>
         {% endif %}
         <button 
-            hx-get="{{ url_for('network.allocation_del_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
+            hx-get="{{ url_for('network.allocation_del_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}&item={{allocation.ipv4}}" 
             hx-trigger="click" 
             hx-target="#modal-del" 
             data-bs-toggle="modal" 
@@ -52,7 +54,7 @@
         </button>
         {% else %}
         <button 
-            hx-get="{{ url_for('network.allocation_edit_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}" 
+            hx-get="{{ url_for('network.allocation_edit_modal',net_id=network.id,ipv4=allocation.ipv4) }}?page={{active_page}}&item={{allocation.ipv4}}" 
             hx-trigger="click" 
             hx-target="#modal-edit" 
             data-bs-toggle="modal" 
@@ -65,4 +67,5 @@
     </td>
     {% endif %}
 </tr>
+{% endif %}
 {% endfor %}

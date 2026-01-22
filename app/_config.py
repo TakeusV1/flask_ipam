@@ -5,12 +5,12 @@ import random, string
 
 ## Flask Server (For DEV)
 app_ip = '127.0.0.1'
-app_port = 80
+app_port = 5000
 app_debug = True
 app_maintenance = False
 
 app_name = 'takeus-ipam'
-app_version = 'V1.6'
+app_version = 'V2026.1'
 app_release_date = '11/2025'
 app_url = "http://0.0.0.0"
 
