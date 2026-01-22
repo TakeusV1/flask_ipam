@@ -11,7 +11,7 @@ app_maintenance = False
 
 app_name = 'takeus-ipam'
 app_version = 'V2026.1'
-app_release_date = '11/2025'
+app_release_date = '01/2026'
 app_url = "http://0.0.0.0"
 
 app_theme = ['default', 'lumen', 'simplex', 'zephyr']
