@@ -6,7 +6,7 @@
     <div class="row">
         <!-- Search BAR -->
         <div class="col-12">
-            <div class="mb-3">
+            <div class="input-group mb-3">
                 <input class="form-control" type="search"
                     name="search" placeholder="Begin Typing To Search Allocation(s)..."
                     hx-post="{{ url_for('network.allocation_search',net_id=network.id) }}"
@@ -14,6 +14,8 @@
                     hx-target="#search-results"
                     hx-indicator=".htmx-indicator"
                 >
+                <a class="btn btn-outline-secondary" href="?view=change">change view</a>
+                <a class="btn btn-outline-secondary" href="?view=hide_dhcp">Hide DHCP</a>
             </div>
         </div>
         <!-- IPV4 TABLE -->
@@ -82,4 +84,5 @@
         <div class="modal-content"></div>
     </div>
 </div>
+<script src="{{ url_for('static',filename='js/custom.js') }}"></script>
 {% endblock %}

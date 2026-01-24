@@ -20,7 +20,12 @@ def networks():
             try:
                 network = IPv4Network(f"{str(form.subnet.data)}/{str(form.prefix.data)}", False)
                 
-                add_net = Network(network_address=str(network.network_address),prefix=network.prefixlen,hosts=network.num_addresses-2,description=str(form.description.data))
+                if int(form.vlan_id.data) == 0:
+                    vlan_id = None
+                else:
+                    vlan_id = int(form.vlan_id.data)
+                
+                add_net = Network(network_address=str(network.network_address),prefix=network.prefixlen,hosts=network.num_addresses-2,vlan_id=vlan_id,description=str(form.description.data))
                 db.session.add(add_net)
                 db.session.commit()
                 
@@ -41,26 +46,55 @@ def networks():
 @network.route('/<int:net_id>/allocations',methods=['GET','POST'])
 @login_required
 def allocations(net_id):
-    
-    active_page = request.args.get('page', type=int)
-    if active_page == None:
-        active_page = 1
-    
-    next_page = active_page+1
-    prev_page = active_page-1
-    
-    if request.args.get('items', type=int) != None:
-        session['items'] = request.args.get('items', type=int)
+    # CHANGE VIEW
+    if request.args.get('view') == "change":
+        db_user = User.query.filter_by(id=current_user.id).first()
+        if current_user.ui_lmode == False:
+            db_user.ui_lmode = True
+        else:
+            db_user.ui_lmode = False
+        db.session.commit()
+        return redirect(url_for('network.allocations',net_id=net_id))
+    # HIDE DHCP
     try:
-        if session['items'] == None:
-            session['items'] = 15
+        session['hide_dhcp']
     except:
-        session['items'] = 15
-    
-    db_network = Network.query.filter_by(id=net_id).first()
-    db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=session['items'] )
-    
-    return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page, next_page=next_page, prev_page=prev_page, navcolor='dark')
+        session['hide_dhcp'] = False
+    if request.args.get('view') == "hide_dhcp":
+        if  session['hide_dhcp'] == False:
+            session['hide_dhcp'] = True
+        else:
+            session['hide_dhcp'] = False
+        return redirect(url_for('network.allocations',net_id=net_id))
+    print(session['hide_dhcp'])
+    # PAGINATION MODE
+    if current_user.ui_lmode == False:
+        active_page = request.args.get('page', type=int)
+        if active_page == None:
+            active_page = 1
+        
+        next_page = active_page+1
+        prev_page = active_page-1
+        
+        if request.args.get('items', type=int) != None:
+            session['items'] = request.args.get('items', type=int)
+        try:
+            if session['items'] == None:
+                session['items'] = 15
+        except:
+            session['items'] = 15
+        
+        db_network = Network.query.filter_by(id=net_id).first()
+        db_allocations = db.paginate(db.select(Allocation).filter_by(net_id=net_id), per_page=session['items'] )
+        
+        return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, allocations=db_allocations, network=db_network, Inventory=Inventory, active_page=active_page, next_page=next_page, prev_page=prev_page, navcolor='dark')
+
+    # LIST MODE
+    else:
+        db_network = Network.query.filter_by(id=net_id).first()
+        db_allocations = Allocation.query.filter_by(net_id=net_id).all()
+
+        return render_template('panel/allocations.html', title="Allocations", is_networks=True, app_version=app_version, allocations=db_allocations, network=db_network, Inventory=Inventory, navcolor='dark')
 
 ## MODAL ROUTES
 
@@ -89,7 +123,7 @@ def allocation_del_modal(net_id,ipv4):
         'action_text': 'Remove',
         'action_url': url_for('network.allocation_delete',net_id=net_id,ipv4=ipv4)
     }
-    return render_template('panel/_modal.html', modal=modal, net_id=net_id, ipv4=ipv4, old_page=request.args.get('page', type=int), pagination_active=True)	
+    return render_template('panel/_modal.html', modal=modal, net_id=net_id, ipv4=ipv4, old_page=str(request.args.get('page', type=int))+f"#{ipv4}", pagination_active=True)	
 
 
 @network.route('/<int:net_id>/allocations/<string:ipv4>/edit_modal', methods=['GET','POST'])
@@ -123,7 +157,7 @@ def allocation_edit_modal(net_id, ipv4):
 
         db.session.commit()
         flash("Allocation Updated", 'success')
-        return redirect(url_for('network.allocations',net_id=net_id,page=request.args.get('page', type=int)))
+        return redirect(url_for('network.allocations',net_id=net_id,page=request.args.get('page', type=int),_anchor=request.args.get('item', type=str)))
     
     modal = {
         'title': 'Update Allocation',
@@ -146,7 +180,7 @@ def allocation_edit_modal(net_id, ipv4):
         form.is_special.default = 2
     form.process()
     
-    return render_template('panel/_modal.html', modal=modal, form=form, old_page=old_page, pagination_active=True)	
+    return render_template('panel/_modal.html', modal=modal, form=form, old_page=str(old_page)+f"#{ipv4}", pagination_active=True)	
 
 ## MODIFICATION ROUTES
 @network.get('/<int:net_id>/allocations/<string:ipv4>/unallocate')
@@ -164,7 +198,7 @@ def allocation_delete(net_id,ipv4):
     db_alloc.is_decom = False
     db.session.commit()
     flash("Allocation Removed", 'warning')
-    return redirect(url_for('network.allocations',net_id=net_id,page=request.args.get('page', type=int)))
+    return redirect(url_for('network.allocations',net_id=net_id,page=request.args.get('page', type=int),_anchor=request.args.get('item', type=str)))
 
 @network.get('/<int:net_id>/allocations/<string:ipv4>/decom/<int:action>')
 @login_required
@@ -178,7 +212,7 @@ def allocation_decom(net_id,ipv4,action):
     else:
         db_alloc.is_decom = False
     db.session.commit()
-    return redirect(url_for('network.allocations',net_id=net_id,page=request.args.get('page', type=int)))
+    return redirect(url_for('network.allocations',net_id=net_id,page=request.args.get('page', type=int),_anchor=request.args.get('item', type=str)))
 
 @network.get('/<int:net_id>/delete')
 @login_required

@@ -8,11 +8,12 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean(),default=False)
     is_reado = db.Column(db.Boolean(),default=False)
     ui_theme = db.Column(db.String(16))
+    ui_lmode = db.Column(db.Boolean(),default=False)
     dat_last = db.Column(db.DateTime())
     
 class Network(db.Model):
     id = db.Column(db.Integer(),primary_key=True,unique=True)
-    vlan_id = db.Column(db.Integer(),unique=True)
+    vlan_id = db.Column(db.Integer())
     prefix = db.Column(db.Integer())
     network_address = db.Column(db.String(16),unique=True)
     hosts = db.Column(db.Integer())
@@ -46,4 +47,6 @@ class Inventory(db.Model):
     host_owner = db.Column(db.String(64))
     host_contact = db.Column(db.String(64))
     ## Allocation(s)
-    host_allocations = db.Column(db.Text()) 
+    host_allocations = db.Column(db.Text())
+    ### Others
+    host_notes = db.Column(db.Text())

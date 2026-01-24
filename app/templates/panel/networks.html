@@ -12,6 +12,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Subnet</th>
                     <th scope="col">Prefix</th>
+                    <th scope="col">VLAN</th>
                     <th scope="col">Usage</th>
                     <th scope="col">Description</th>
                     <th scope="col">Actions</th>
@@ -23,6 +24,7 @@
                         <th scope="row">{{network.id}}</th>
                         <td>{{network.network_address}}</td>
                         <td>{{network.prefix}}</td>
+                        <td>{{network.vlan_id}}</td>
                         <td>{{Allocation.query.filter_by(net_id=network.id,is_used=True).count()}} / {{network.hosts}} </td>
                         <td><b>{{network.description}}</b></td>
                         <td>
@@ -58,12 +60,16 @@
                 <form method="POST">
                     {{ form.csrf_token }}
                     <div class="mb-3">
-                        <label for="subnet" class="form-label">Subnet</label>
+                        <label for="subnet" class="form-label">Subnet*</label>
                         {{ form.subnet(class="form-control", placeholder="192.168.0.0") }}
                     </div>
                     <div class="mb-3">
-                        <label for="prefix" class="form-label">Prefix</label>
+                        <label for="prefix" class="form-label">Prefix*</label>
                         {{ form.prefix(class="form-control", placeholder="24") }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="vlan_id" class="form-label">VLAN</label>
+                        {{ form.vlan_id(class="form-control", placeholder="VLAN_ID (OPTIONAL)", value="0") }}
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description</label>
