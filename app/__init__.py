@@ -60,7 +60,7 @@ def create_app():
             "401",
             "Unauthorized",
             "The server could not verify that you are authorized to access the URL requested. You are not authenticated, or your browser doesn't understand how to supply the credentials required...",
-            "https://takeus.ovh/static/img/login.svg"
+            "/static/img/403.png"
         ]
         return render_template('srv_error.html',HTTP_ERROR=HTTP_ERROR), 401
 
@@ -70,7 +70,7 @@ def create_app():
             "403",
             "Forbidden",
             "You don't have the permission to access the requested resource. It is either read-protected or not readable by the server...",
-            "https://takeus.ovh/static/img/login.svg"
+            "/static/img/403.png"
         ]
         return render_template('srv_error.html',HTTP_ERROR=HTTP_ERROR), 403
 
@@ -80,7 +80,7 @@ def create_app():
             "404",
             "Not Found",
             "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again...",
-            "https://takeus.ovh/static/img/404.svg"
+            "/static/img/404.png"
         ]
         return render_template('srv_error.html',HTTP_ERROR=HTTP_ERROR), 404
 
@@ -90,7 +90,7 @@ def create_app():
             "500",
             "Internal Server Error",
             "The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.",
-            "https://takeus.ovh/static/img/500.svg"
+            "/static/img/403.png"
         ]
         return render_template('srv_error.html',HTTP_ERROR=HTTP_ERROR), 500
 
@@ -100,7 +100,7 @@ def create_app():
             "503",
             "Service Unavailable",
             "The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later.",
-            "https://takeus.ovh/static/img/503.svg"
+            "/static/img/403.png"
         ]
         return render_template('srv_error.html',HTTP_ERROR=HTTP_ERROR), 503
 
