@@ -13,10 +13,20 @@
     <link rel="stylesheet" href="{{ url_for('static',filename='css/custom.css') }}"/>
     {% if current_user.ui_theme == 'zephyr' %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/zephyr.css') }}"/>
+    {% elif current_user.ui_theme == 'spacelab' %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/spacelab.css') }}"/>
     {% elif current_user.ui_theme == 'lumen' %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/lumen.css') }}"/>
     {% elif current_user.ui_theme == 'simplex' %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/simplex.css') }}"/>
+    {% elif current_user.ui_theme == 'cerulean' %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/cerulean.css') }}"/>
+    {% elif current_user.ui_theme == 'brite' %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/brite.css') }}"/>
+    {% elif current_user.ui_theme == 'materia' %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/materia.css') }}"/>
+    {% elif current_user.ui_theme == 'litera' %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/Bootstrap/litera.css') }}"/>
     {% else %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}"/>
     {% endif %}
@@ -24,6 +34,7 @@
 </head>
 <body>
     {% block content %}{% endblock %}
+    {% include 'panel/_footer.html' %}
     <!-- JAVASCRIPT -->
     <script src="{{ url_for('static',filename='js/htmx.min.js') }}"></script>
     <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>

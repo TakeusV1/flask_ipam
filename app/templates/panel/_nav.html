@@ -37,9 +37,14 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='default') }}">default</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='spacelab') }}">Spacelab</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='zephyr') }}">Zephyr</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='simplex') }}">Simplex</a></li>
                         <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='lumen') }}">Lumen</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='cerulean') }}">Cerulean</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='brite') }}">Brite</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='materia') }}">Materia</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('base.change_theme',name='litera') }}">Litera</a></li>
                     </ul>
                     </div>
                 <a class="btn btn-outline-warning btn-sm" type="submit" href="{{ url_for('auth.logout') }}">logout</a>

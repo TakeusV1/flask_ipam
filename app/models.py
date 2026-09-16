@@ -24,6 +24,7 @@ class Allocation(db.Model):
     ipv4 = db.Column(db.String(16),primary_key=True,unique=True)
     net_id = db.Column(db.Integer(),db.ForeignKey('network.id'))
     hostname = db.Column(db.String(32))
+    hostname_full = db.Column(db.String(64))
     description = db.Column(db.String(64))
     is_used = db.Column(db.Boolean(),default=False)
     is_dhcp = db.Column(db.Boolean(),default=False)

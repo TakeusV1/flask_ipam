@@ -1,0 +1,11 @@
+#!/sbin/openrc-run
+
+name="gunicorn-flask"
+description="Gunicorn server for Flask app"
+command="/usr/bin/gunicorn"
+command_args="--workers 1 --bind 127.0.0.1:8000 'app:create_app()' --preload"
+pidfile="/run/${name}.pid"
+directory="/opt/fipam"
+command_background="yes"
+
+---------------------------------------------> /etc/init.d/flask-ipam

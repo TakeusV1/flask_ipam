@@ -10,11 +10,11 @@ app_debug = True
 app_maintenance = False
 
 app_name = 'takeus-ipam'
-app_version = 'V2026.3'
-app_release_date = '03/2026'
+app_version = 'V2026.9'
+app_release_date = '09/2026'
 app_url = "http://0.0.0.0"
 
-app_theme = ['default', 'lumen', 'simplex', 'zephyr']
+app_theme = ['default', 'spacelab', 'lumen', 'simplex', 'zephyr', 'cerulean', 'brite', 'materia', 'litera']
 class Configuration:
     # replace SECRET_KEY with value from "openssl rand -hex 32" or similar for STATIC sessions
     # With actual configuration, every application restart, user have to re-login...
