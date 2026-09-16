@@ -24,7 +24,8 @@ class ChangePasswordForm(FlaskForm):
     is_readonly = SelectField(choices=[(0,'No'),(1,'Yes')],validators=[DataRequired()])
     
 class ChangeAllocationForm(FlaskForm):
-    hostname = StringField(validators=[Length(max=128)])
+    shortname = StringField(validators=[Length(max=128)])
+    fqdn = StringField(validators=[Length(max=128)])
     description = StringField(validators=[Length(max=128)])
     is_special = SelectField(choices=[(0,'None'),(1,'DHCP'),(2,'Gateway')],validators=[DataRequired()],label='Special USE ?')
 

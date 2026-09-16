@@ -4,6 +4,7 @@
 <tr>
     <td id="{{allocation.ipv4}}"><b>{{allocation.ipv4}}</b></td>
     <td>{{allocation.hostname}}</td>
+    <td>{{allocation.hostname_full}}</td>
     <td>{{allocation.description}}</td>
     <td>
         {% if Inventory.query.filter_by(id=allocation.device_id).first() %}
@@ -21,9 +22,7 @@
         N/A
         {% endif %}
     </td>
-    <td>{{allocation.is_dhcp}}</td>
-    <td>{{allocation.is_gateway}}</td>
-    <td>{{allocation.is_decom}}</td>
+    <td>{% if allocation.is_dhcp %}<span class="badge text-bg-secondary" style="margin-right: 0.5rem;">DHCP</span>{% endif %}{% if allocation.is_gateway %}<span class="badge text-bg-primary" style="margin-right: 0.5rem;">GATEWAY</span>{% endif %}{% if allocation.is_decom %}<span class="badge text-bg-warning" style="margin-right: 0.5rem;">DECOM</span>{% endif %}</td>
     {% if current_user.is_reado == False %}
     <td>
         {% if allocation.is_used %}

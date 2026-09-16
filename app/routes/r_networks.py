@@ -66,7 +66,6 @@ def allocations(net_id):
         else:
             session['hide_dhcp'] = False
         return redirect(url_for('network.allocations',net_id=net_id))
-    print(session['hide_dhcp'])
     # PAGINATION MODE
     if current_user.ui_lmode == False:
         active_page = request.args.get('page', type=int)
@@ -136,7 +135,8 @@ def allocation_edit_modal(net_id, ipv4):
         
     form = ChangeAllocationForm()
     if form.validate_on_submit() and request.method == 'POST':
-        db_alloc.hostname = str(form.hostname.data)
+        db_alloc.hostname = str(form.shortname.data)
+        db_alloc.hostname_full = str(form.fqdn.data)
         db_alloc.description = str(form.description.data)
         db_alloc.is_used = True
         # Special Allocation
@@ -145,6 +145,7 @@ def allocation_edit_modal(net_id, ipv4):
             db_alloc.is_dhcp = True
             db_alloc.is_gateway = False
             db_alloc.hostname = None
+            db_alloc.hostname_full = None
             db_alloc.description = "DHCP Allocation"
         elif int(form.is_special.data) == 2:
             # Gateway
@@ -172,7 +173,9 @@ def allocation_edit_modal(net_id, ipv4):
     if old_page == 0:
         old_page = 1
     
-    form.hostname.default = db_alloc.hostname
+    form.shortname.default = db_alloc.hostname
+    form.fqdn.default = db_alloc.hostname_full
+
     form.description.default = db_alloc.description
     if db_alloc.is_dhcp:
         form.is_special.default = 1
@@ -192,6 +195,7 @@ def allocation_delete(net_id,ipv4):
     db_alloc = Allocation.query.filter_by(net_id=net_id,ipv4=ipv4).first()
     db_alloc.is_used = False
     db_alloc.hostname = None
+    db_alloc.hostname_full = None
     db_alloc.description = None
     db_alloc.is_dhcp = False
     db_alloc.is_gateway = False
