@@ -19,6 +19,8 @@ def create_app():
     
     app = Flask(__name__)
     app.config.from_object(Configuration)
+    
+    app.jinja_env.globals['app_version'] = app_version
         
     login_manager.init_app(app)
     db.init_app(app)
